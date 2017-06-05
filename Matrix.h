@@ -1,5 +1,7 @@
 #include<iostream>
 #include<vector>
+#include<string>
+#include<algorithm>
 #include<initializer_list>
 
 
