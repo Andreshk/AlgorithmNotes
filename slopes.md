@@ -11,8 +11,8 @@
   Slopes(A[1..n])<br>
   1. count <- 1<br>
   2. for i <- 2 to n<br>
-  3.   if A[i] < A[i-1]<br>
-  4.    count <- count + 1<br>
+  3. __if A[i] < A[i-1]<br>
+  4. ____count <- count + 1<br>
   5. return count
 </details>
 
