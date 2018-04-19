@@ -5,7 +5,7 @@ BFSLevels(G(V,E): graph, v: vertex from V)
  3.   pred[u] <- NIL
  4.   dist[u] <- infinity
  5. Qc, Qn <- празни опашки
- 6. level <- 0
+ 6. level <- 1
  7. visited[v] <- True
  8. Qc.push(v)
  9. dist[v] <- 0
