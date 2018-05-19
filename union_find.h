@@ -20,7 +20,7 @@ class union_find
         return x;
     }
 public:
-    union_find(const Idx n) : values{ n } {
+    union_find(const Idx n) : values(n) {
         for (Idx i = 0; i < n; ++i) {
             parent(i) = i;
             rank(i) = 0;
