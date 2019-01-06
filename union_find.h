@@ -22,6 +22,7 @@ class union_find
         return x;
     }
 public:
+    // Constructs a disjont-set with n values, each in its own set
     explicit union_find(const Idx n) : values{ n } {
         for (Idx i = 0; i < n; ++i) {
             parent(i) = i;
