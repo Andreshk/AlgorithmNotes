@@ -1,29 +1,34 @@
-#include"Matrix.h"
-#include<limits>
+#include "DynProgProblems.h"
 
-void optimalSingleRobotPath(const Matrix<int>& field) // T(n,m) = O(nm), M(n,m) = O(nm) <- Ð¼Ð¾Ð¶Ðµ Ð´Ð° ÑÐµ Ð¾Ð¿Ñ‚Ð¸Ð¼Ð¸Ð·Ð¸Ñ€Ð° Ð´Ð¾ M(n,m) = O(min{n,m})
-{
-	const size_t n = field.rows(), m = field.cols();
-	Matrix<int> M(n, m, std::numeric_limits<int>::min());
-	M[n - 1][m - 1] = field[n - 1][m - 1];
-	for (size_t i = n - 2; i < n; i--) M[i][m - 1] = M[i + 1][m - 1] + field[i][m - 1];
-	for (size_t j = m - 2; j < m; j--) M[n - 1][j] = M[n - 1][j + 1] + field[n - 1][j];
-	
-	for (size_t i = n - 2; i < n; i--)
-		for (size_t j = m - 2; j < m; j--)
-		{
-			M[i][j] = std::max(M[i][j], M[i + 1][j] + field[i][j]);
-			M[i][j] = std::max(M[i][j], M[i][j + 1] + field[i][j]);
-		}
-	//return M[0][0];
-	
-	std::cout << field;
-	std::cout << "Maximum profit path:";
-	size_t i = 0, j = 0;
-	while (i < n - 1 || j < m - 1)
-	{
-		if (i < n - 1 && M[i][j] == M[i + 1][j] + field[i][j]) { std::cout << " D"; ++i; continue; }
-		if (j < m - 1 && M[i][j] == M[i][j + 1] + field[i][j]) { std::cout << " R"; ++j; continue; }
-	}
-	std::cout << "\nMaximum profit: " << M[0][0] << "\n\n";
+// T(n,m) = O(nm), M(n,m) = O(nm) <- ìîæå äà ñå îïòèìèçèðà äî M(n,m) = O(min{n,m})
+void optimalSingleRobotPath(const Matrix<int>& field) {
+    const int n = field.rows(), m = field.cols();
+    const int minusInf = std::numeric_limits<int>::min();
+    Matrix<int> M(n, m, minusInf);
+    M[n - 1][m - 1] = field[n - 1][m - 1];
+    for (int i = n - 2; i >= 0; --i)
+        M[i][m - 1] = M[i + 1][m - 1] + field[i][m - 1];
+    for (int j = m - 2; j >= 0; --j)
+        M[n - 1][j] = M[n - 1][j + 1] + field[n - 1][j];
+
+    for (int i = n - 2; i >= 0; --i)
+        for (int j = m - 2; j >= 0; --j) {
+            M[i][j] = std::max(M[i][j], M[i + 1][j] + field[i][j]);
+            M[i][j] = std::max(M[i][j], M[i][j + 1] + field[i][j]);
+        }
+    //return M[0][0];
+
+    std::cout << field;
+    std::cout << "Maximum profit path: ";
+    int i = 0, j = 0;
+    while (true) {
+        if (i + 1 < n && M[i][j] == M[i + 1][j] + field[i][j]) {
+            std::cout << 'D'; ++i;
+        } else if (j + 1 < m && M[i][j] == M[i][j + 1] + field[i][j]) {
+            std::cout << 'R'; ++j;
+        } else {
+            break; // we have reached the bottom
+        }
+    }
+    std::cout << "\nMaximum profit: " << M[0][0] << "\n\n";
 }

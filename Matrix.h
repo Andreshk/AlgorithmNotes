@@ -1,72 +1,75 @@
-#include<iostream>
-#include<vector>
-#include<string>
-#include<algorithm>
-#include<initializer_list>
+#pragma once
+#include <iostream>
+#include <vector>
+#include <algorithm> // std::{min,max}
+#include <initializer_list>
 
+#include <cassert>
+#define vassert assert
 
 template<class T>
-class Matrix
-{
-	using matrix_initializer_list = std::initializer_list<std::initializer_list<T>>;
+class Matrix {
+    using matrix_initializer_list = std::initializer_list<std::initializer_list<T>>;
 
-	std::vector<T> values;
-	size_t n, m;
+    std::vector<T> values;
+    int n, m; // брой редове & колони, съотв.
 
-	/* РїРѕР·РІРѕР»СЏРІР° СЃР»РµРґРЅРёС‚Рµ РёР·РІРёРєРІР°РЅРёСЏ:
-	 * Matrix<int> m1{ {1,2,3}, {4,5,6} };
-	 * Matrix<int> m2 = { {1,2,3}, {4,5,6} };
-	 * void f(Matrix<int>);
-	 * f({ {1,2,3}, {4,5,6} });
-	 */
-	void init(const matrix_initializer_list& il)
-	{
-		clear();
-		n = il.size();
-		m = il.begin()->size();
-		for (const auto& row : il) if (row.size() != m)
-		{
-			std::cout << "Invalid matrix dimensions (jagged matrix)!\n";
-			clear();
-			return;
-		}
-		values.resize(n*m);
-		size_t idx = 0;
-		for (const auto& row : il)
-			for (const auto& val : row)
-				values[idx++] = val;
-	}
-	void clear() noexcept
-	{
-		values.clear();
-		n = m = 0;
-	}
+    /* позволява следните извиквания:
+     * Matrix<int> m1{ {1,2,3}, {4,5,6} };
+     * Matrix<int> m2 = { {1,2,3}, {4,5,6} };
+     * void f(Matrix<int>);
+     * f({ {1,2,3}, {4,5,6} });
+     */
+    void init(matrix_initializer_list il) {
+        values.clear();
+        n = int(il.size());
+        m = int(il.begin()->size());
+        values.resize(n*m);
+        size_t idx = 0;
+        for (const auto& row : il) {
+            vassert(row.size() == m);
+            for (const auto& val : row)
+                values[idx++] = val;
+        }
+    }
 public:
-	Matrix(size_t _n, size_t _m, const T& _val = T()) : values(_n*_m, _val), n(_n), m(_m) {}
-	Matrix(const matrix_initializer_list& il) { init(il); }
-	Matrix& operator=(const matrix_initializer_list& il) { init(il); return *this; }
+    Matrix(int _n, int _m, const T& _val = T{}) : values(_n*_m, _val), n(_n), m(_m) {}
+    Matrix(matrix_initializer_list il) { init(il); }
+    Matrix& operator=(matrix_initializer_list il) { init(il); return *this; }
 
-	T* operator[](size_t row) noexcept { return values.data() + m*row; }
-	const T* operator[](size_t row) const noexcept { return values.data() + m*row; }
-	T at(size_t i, size_t j) const noexcept(noexcept(T()))
-	{
-		// exception-safe РІРµСЂСЃРёСЏ РЅР° РѕРїРµСЂР°С‚РѕСЂР° [], РєРѕСЏС‚Рѕ РІСЂСЉС‰Р°
-		// СЃС‚РѕР№РЅРѕСЃС‚ РїРѕ РїРѕРґСЂР°Р·Р±РёСЂР°РЅРµ РїСЂРё РЅРµРІР°Р»РёРґРЅРё РёРЅРґРµРєСЃРё
-		if (i >= n || j >= m) return T();
-		return (*this)[i][j];
-	}
-	size_t rows() const noexcept { return n; }
-	size_t cols() const noexcept { return m; }
+    T* operator[](int row) {
+        vassert(row >= 0 && row < n);
+        return values.data() + m * row;
+    }
+    const T* operator[](int row) const {
+        vassert(row >= 0 && row < n);
+        return values.data() + m*row;
+    }
+    T at(int i, int j) const {
+        // exception-safe версия на оператора [], която връща
+        // стойност по подразбиране при невалидни индекси
+        return ((i < 0 || j < 0 || i >= n || j >= m) ? T{} : (*this)[i][j]);
+    }
+    int rows() const { return n; }
+    int cols() const { return m; }
 };
 
-/* // С‚СЂСЏР±РІР° РґР° Рµ РІ .cpp С„Р°Р№Р» (!)
 template<class T>
-std::ostream& operator<<(std::ostream& os, const Matrix<T>& matr)
-{
-	for (size_t i = 0; i < matr.rows(); i++)
-	{
-		for (size_t j = 0; j < matr.cols(); j++) os << matr[i][j] << " ";
-		os << "\n";
-	}
-	return os << "\n";
-}*/
+std::ostream& operator<<(std::ostream& os, const Matrix<T>& matr) {
+    for (int i = 0; i < matr.rows(); i++) {
+        for (int j = 0; j < matr.cols(); j++)
+            os << matr[i][j] << ' ';
+        os << '\n';
+    }
+    return os << '\n';
+}
+
+template<class T>
+T min(const T& a, const T& b, const T& c) {
+    return std::min(std::min(a, b), c);
+}
+
+template<class T>
+T max(const T& a, const T& b, const T& c, const T& d) {
+    return std::max(std::max(a, b), std::max(c, d));
+}

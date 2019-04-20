@@ -1,34 +1,38 @@
-#include"Matrix.h"
+#include "DynProgProblems.h"
 
-void longestIncreasingSubsequence(const std::vector<int>& values) // T(n) = O(n^2), M(n) = O(n)
-{
-	/* Р·Р°Р±РµР»РµР¶РєР°:
-	 * СЃ РёР·РіСЂР°Р¶РґР°РЅРµС‚Рѕ РЅР° РіСЂР°С„ РѕС‚РЅРѕРІРѕ T(n) = O(n^2), РЅРѕ M(n) = O(n+m) - РёР·РіСЂР°Р¶РґР°РЅРµС‚Рѕ РІРёРЅР°РіРё Рµ Р±Р°РІРЅРѕ Рё РЅРё С‚СЂСЏР±РІР° РґРѕРїСЉР»РЅ. РїР°РјРµС‚
-	 * Р±РµР· РїРѕСЃС‚СЂРѕСЏРІР°РЅРµ РЅР° РіСЂР°С„ T(n) = O(n^2), РЅРѕ M(n) = O(n)
-	 */
-	const size_t count = values.size();
-	std::vector<size_t> M(count), successors(count);
-	for (size_t i = count - 1; i < count; i--) // i < count РІРјРµСЃС‚Рѕ i>=0
-	{
-		M[i] = 1;
-		successors[i] = count;
-		for (size_t j = i + 1; j < count; j++)
-			if (values[i] < values[j] && M[i] < M[j] + 1)
-			{
-				M[i] = M[j] + 1;
-				successors[i] = j;
-			}
-	}
-	size_t maxIdx = 0;
-	for (size_t i = 1; i < M.size(); i++) if (M[maxIdx] < M[i]) maxIdx = i;
-	//return M[maxIdx];
+// T(n) = O(n^2), M(n) = O(n)
+void longestIncreasingSubsequence(const std::vector<int>& values) {
+    /* забележка:
+     * с изграждането на граф отново T(n) = O(n^2), но M(n) = O(n+m),
+     * тъй като изграждането винаги е бавно и ни трябва допълн. памет
+     * без построяване на граф T(n) = O(n^2), но M(n) = O(n)
+     */
+    const int count = int(values.size());
+    std::vector<int> M(count), successors(count);
+    for (int i = count - 1; i >= 0; --i) {
+        M[i] = 1;
+        successors[i] = count;
+        for (int j = i + 1; j < count; j++)
+            if (values[i] < values[j] && M[i] < M[j] + 1) {
+                M[i] = M[j] + 1;
+                successors[i] = j;
+            }
+    }
+    // Find the maximum value
+    int maxIdx = 0;
+    for (int i = 1; i < count; i++)
+        if (M[maxIdx] < M[i])
+            maxIdx = i;
+    //return M[maxIdx];
 
-	std::cout << "Longest increasing subsequence:";
-	size_t nextIdx = maxIdx;
-	while (nextIdx != count)
-	{
-		std::cout << " " << values[nextIdx];
-		nextIdx = successors[nextIdx];
-	}
-	std::cout << "\nLength = " << M[maxIdx] << "\n\n";
+    std::cout << "Longest increasing subsequence of:\n";
+    for (const int x : values)
+        std::cout << x << ' ';
+    std::cout << "is:\n";
+    int nextIdx = maxIdx;
+    while (nextIdx != count) {
+        std::cout << values[nextIdx] << ' ';
+        nextIdx = successors[nextIdx];
+    }
+    std::cout << "\nLength = " << M[maxIdx] << "\n\n";
 }
