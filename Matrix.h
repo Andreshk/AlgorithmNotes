@@ -12,9 +12,9 @@ class Matrix {
     using matrix_initializer_list = std::initializer_list<std::initializer_list<T>>;
 
     std::vector<T> values;
-    int n, m; // брой редове & колони, съотв.
+    int n, m; // row & column count, respectively
 
-    /* позволява следните извиквания:
+    /* allows for the following expressions:
      * Matrix<int> m1{ {1,2,3}, {4,5,6} };
      * Matrix<int> m2 = { {1,2,3}, {4,5,6} };
      * void f(Matrix<int>);
@@ -46,8 +46,8 @@ public:
         return values.data() + m*row;
     }
     T at(int i, int j) const {
-        // exception-safe версия на оператора [], която връща
-        // стойност по подразбиране при невалидни индекси
+        // exception-safe alternative to operator[],
+        // returning a default value on invalid input
         return ((i < 0 || j < 0 || i >= n || j >= m) ? T{} : (*this)[i][j]);
     }
     int rows() const { return n; }

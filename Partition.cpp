@@ -1,6 +1,6 @@
 #include "DynProgProblems.h"
 
-// T(n) = O(nS), M(n) = O(nS) <- може да се оптимизира до M(n) = O(S)
+// T(n) = O(nS), M(n) = O(nS) <- can be reduced to M(n) = O(S)
 void Partition(const std::vector<int>& values) {
     int S = 0;
     for (auto v : values)
@@ -8,7 +8,7 @@ void Partition(const std::vector<int>& values) {
     vassert(S % 2 == 0);
     S /= 2;
     const int n = int(values.size());
-    // налага се да симулираме bool чрез int, because std::vector<bool> is s#!t
+    // we have to fake booleans with ints, because std::vector<bool> is s#!t
     Matrix<int> M(n, S + 1, 0);
     for (int P = 1; P <= S; P++)
         M[0][P] = (P == values[0]);

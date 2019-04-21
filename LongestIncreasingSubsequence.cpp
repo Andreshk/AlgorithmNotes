@@ -2,10 +2,11 @@
 
 // T(n) = O(n^2), M(n) = O(n)
 void longestIncreasingSubsequence(const std::vector<int>& values) {
-    /* забележка:
-     * с изграждането на граф отново T(n) = O(n^2), но M(n) = O(n+m),
-     * тъй като изграждането винаги е бавно и ни трябва допълн. памет
-     * без построяване на граф T(n) = O(n^2), но M(n) = O(n)
+    /* Note:
+     * building a graph leads to T(n) = O(n^2), but M(n) = O(n+m),
+     * since the process is always slow and we need additional memory
+     * Without a graph (using the implicit one) we have T(n) = O(n^2)
+     * still, but M(n) = O(n) only.
      */
     const int count = int(values.size());
     std::vector<int> M(count), successors(count);

@@ -1,6 +1,6 @@
 #include "DynProgProblems.h"
 
-// T(n) = O(n), M(n) = O(1). Последните 3 аргумента се използват само от алг. за макс. сума в матрица
+// T(n) = O(n), M(n) = O(1). The last 3 should inly be used by MaximumSubmatrixSum
 void maximumSubarraySum(const std::vector<int>& values, int* result, int* from, int* to) {
     const int n = int(values.size());
     int first = 0;
@@ -10,7 +10,7 @@ void maximumSubarraySum(const std::vector<int>& values, int* result, int* from, 
     int bestFrom = first, bestTo = first, currFrom = first;
     int current = values[first], best = values[first];
     if (first == n) {
-        // Всички числа са отрицателни => макс. сума е 0, на празния масив
+        // No positive numbers => maximum sum is 0, from the empty subarray
         if (result && from && to) {
             *result = *from = *to = 0;
         }

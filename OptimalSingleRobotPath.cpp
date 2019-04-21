@@ -1,6 +1,6 @@
 #include "DynProgProblems.h"
 
-// T(n,m) = O(nm), M(n,m) = O(nm) <- може да се оптимизира до M(n,m) = O(min{n,m})
+// T(n,m) = O(nm), M(n,m) = O(nm) <- can be reduced to M(n,m) = O(min{n,m})
 void optimalSingleRobotPath(const Matrix<int>& field) {
     const int n = field.rows(), m = field.cols();
     const int minusInf = std::numeric_limits<int>::min();

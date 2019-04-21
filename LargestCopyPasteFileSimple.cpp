@@ -3,7 +3,7 @@
 // T(n) = O(n), M(n) = O(n)
 void largestCopyPasteFileSimple(const int n) {
     vassert(n <= 189); // n = 190 overflows uint64
-    // Затворена формула:
+    // Closed formula:
     // return ((3 + n%3) * (1ui64 << (n / 3 - 1)));
     // T(n) = O(1), M(n) = O(1), f(n) = Theta(2^(n/3))
 

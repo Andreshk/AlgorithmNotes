@@ -1,17 +1,17 @@
 #include "DynProgProblems.h"
 
-// T(n) = O(n^2), M(n) = O(n) <- може да се оптимизира до T(n) = O(n)
+// T(n) = O(n^2), M(n) = O(n) <- can be reduced to T(n) = O(n)
 void largestCopyPasteFile(const int n) {
-    vassert(n < 158); // след n = около 158 започват неточностите !
-    // затворена формула - неизвестна :/
+    vassert(n < 158); // n > 158 can lead to overflow !
+    // clsoed formula - unknown :/
     std::vector<uint64_t> M(n + 1, 0);
     M[1] = 1;
     M[2] = 2;
     for (int k = 3; k <= n; ++k){
         M[k] = std::max(M[k - 1] + 1, M[k - 1]);
-        for (int i = 0; i <= k - 3; i++) // Брой Ctrl-V след едно Ctrl-C
+        for (int i = 0; i <= k - 3; i++) // number of Ctrl-V actions after a Ctrl-C
             M[k] = std::max(M[k], (i + 1)*M[k - 2 - i]);
-        // Може да се докаже, че за оптимална стратегия i < 6 е достатъчно => T(n) = O(n)
+        // It can be shown that i < 6 is enough for optimal strategy => T(n) = O(n)
     }
     // return M[n];
 

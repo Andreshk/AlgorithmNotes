@@ -1,6 +1,6 @@
 #include "DynProgProblems.h"
 
-// T(n,k) = O(nk), M(n,k) = O(nk) <- може да се оптимизира до M(n,k) = O(k)
+// T(n,k) = O(nk), M(n,k) = O(nk) <- can be reduced to M(n,k) = O(k)
 void binomialCoefficient(const int n, const int k) {
     vassert(n > 0 && k > 0);
     Matrix<int> M(n, k, 0);

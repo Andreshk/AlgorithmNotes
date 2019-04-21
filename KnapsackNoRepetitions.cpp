@@ -1,6 +1,6 @@
 #include "DynProgProblems.h"
 
-// T(n,W) = O(nW), M(n,W) = O(nW) <- може да се оптимизира до M(n,W) = O(W)
+// T(n,W) = O(nW), M(n,W) = O(nW) <- can be reduced to M(n,W) = O(W)
 void KnapsackNoRepetitions(const std::vector<Item>& items, const int W) {
     vassert(W >= 0);
     const int n = int(items.size());
@@ -14,9 +14,10 @@ void KnapsackNoRepetitions(const std::vector<Item>& items, const int W) {
                 M[k][P] = std::max(M[k - 1][P], M[k - 1][P - item.weight] + item.price);
             }
         }
-    //return M[n][W]
+    //return M[n][W];
 
-    std::cout << "The optimal profit for weight " << W << " is: " << M[n][W] << "\nThe following items are being used:\n";
+    std::cout << "The optimal profit for weight " << W << " is: " << M[n][W]
+              << "\nThe following items are being used:\n";
     int P = W;
     for (int k = n; k > 0; --k)
         if (M[k][P] != M[k - 1][P]) {

@@ -1,6 +1,6 @@
 #include "DynProgProblems.h"
 
-// T(n,m) = O(nm), M(n,m) = O(nm) <- може да се оптимизира до M(n,m) = O(min{n,m})
+// T(n,m) = O(nm), M(n,m) = O(nm) <- can be reduced to M(n,m) = O(min{n,m})
 void singleRobotPathCount(const Matrix<int>& blocked) {
     const int n = blocked.rows(), m = blocked.cols();
     Matrix<int> M(n, m, 0);

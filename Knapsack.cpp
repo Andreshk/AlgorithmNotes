@@ -1,6 +1,6 @@
 #include "DynProgProblems.h"
 
-// Ò(n,W) = O(nW), M(n,W) = O(W)
+// T(n,W) = O(nW), M(n,W) = O(W)
 void Knapsack(const std::vector<Item>& items, const int W) {
     vassert(W >= 0);
     std::vector<int> M(W + 1, 0);
@@ -11,7 +11,7 @@ void Knapsack(const std::vector<Item>& items, const int W) {
     //return M[W];
 
     std::cout << "The optimal profit for weight " << W << " is: " << M[W]
-        << "\nThe following items are being used:\n";
+              << "\nThe following items are being used:\n";
     int w = W;
     while (M[w] != 0) {
         for (const Item& item : items)
