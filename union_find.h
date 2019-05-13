@@ -2,9 +2,8 @@
 #include <vector>
 #include <type_traits> // std::is_unsigned_v
 
-template <class Idx>
-class union_find
-{
+template <class Idx = size_t>
+class UnionFind {
     static_assert(std::is_unsigned_v<Idx>);
     struct pair { Idx p, r; };
     std::vector<pair> values;
@@ -23,7 +22,7 @@ class union_find
     }
 public:
     // Constructs a disjont-set with n values, each in its own set
-    explicit union_find(const Idx n) : values{ n } {
+    explicit UnionFind(const Idx n) : values{ n } {
         for (Idx i = 0; i < n; ++i) {
             parent(i) = i;
             rank(i) = 0;
