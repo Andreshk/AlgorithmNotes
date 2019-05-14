@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <optional>
+#include <cstddef>     // size_t
 #include <type_traits> // std::is_unsigned_v
 
 template <class Idx = size_t>
@@ -10,9 +10,8 @@ class UnionFind {
     std::vector<pair> values;
 
     // Ease of access, will be inlined
-          Idx& parent(Idx x)       { return values[x].p; }
-          Idx&   rank(Idx x)       { return values[x].r; }
-    const Idx& parent(Idx x) const { return values[x].p; }
+    Idx& parent(Idx x) { return values[x].p; }
+    Idx&   rank(Idx x) { return values[x].r; }
 
     // Find w/ path halving. May probably be optimized a little more.
     Idx Find(Idx x) {
@@ -30,26 +29,18 @@ public:
             rank(i) = 0;
         }
     }
-    // Union by rank. Returns root of the merged component on successful
-    // union, empty if x and y are already in the same component.
-    std::optional<Idx> Union(Idx x, Idx y) {
+    // Union by rank. Returns true on successful union,
+    // false if x and y are already in the same component.
+    bool Union(Idx x, Idx y) {
         Idx xroot = Find(x), yroot = Find(y);
         if (xroot == yroot)
-            return {};
+            return false;
         if (rank(xroot) < rank(yroot))
             std::swap(xroot, yroot);
         parent(yroot) = xroot;
         Idx& xrank = rank(xroot);
         if (xrank == rank(yroot))
             ++xrank;
-        return { yroot };
-    }
-    // Non-modifying Find
-    Idx Root(Idx x) const {
-        while (parent(x) != x) {
-            //parent(x) = parent(parent(x));
-            x = parent(x);
-        }
-        return x;
+        return true;
     }
 };
