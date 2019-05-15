@@ -46,18 +46,18 @@ template <typename W>
 class Graph {
 public:
     static const bool isWeighted = !std::is_void_v<W>;
-    using adj_pair = std::conditional_t<isWeighted, std::pair<Vertex, W>, Vertex>;
-    using iterator = const adj_pair*;
+    using AdjPair  = std::conditional_t<isWeighted, std::pair<Vertex, W>, Vertex>;
+    using iterator = const AdjPair*;
 private:
-    std::unique_ptr<adj_pair[]> neighbours;
-    std::unique_ptr<  size_t[]> offsets;
+    std::unique_ptr<AdjPair[]> neighbours;
+    std::unique_ptr< size_t[]> offsets;
     size_t n, m;
 public:
     explicit Graph(std::istream& is) {
         is >> n;
         is >> m;
-        offsets    = std::make_unique<  size_t[]>(n + 1);
-        neighbours = std::make_unique<adj_pair[]>(2 * m); // Each edge is present in the adjacency lists of both of it's vertices
+        offsets    = std::make_unique< size_t[]>(n + 1);
+        neighbours = std::make_unique<AdjPair[]>(2 * m); // Each edge is present in the adjacency lists of both of it's vertices
         size_t currOff = 0;
         for (size_t i = 0; i < n; ++i) {
             offsets[i] = currOff;
@@ -103,8 +103,8 @@ Graph<W> makeRandom(const Vertex n, const Vertex m, Distr& distr) {
     vassert(m <= nchk2);
     static std::mt19937_64 eng{ uint64_t(std::chrono::steady_clock::now().time_since_epoch().count()) };
     // Create an array, containing all possible edges
-    using adj_pair = typename impl::Graph<W>::adj_pair;
-    std::vector<std::pair<Vertex,adj_pair>> allEdges(nchk2);
+    using AdjPair = typename impl::Graph<W>::AdjPair;
+    std::vector<std::pair<Vertex,AdjPair>> allEdges(nchk2);
     size_t idx = 0;
     for (Vertex i = 0; i < n; ++i)
         for (Vertex j = i + 1; j < n; ++j)
@@ -124,7 +124,7 @@ Graph<W> makeRandom(const Vertex n, const Vertex m, Distr& distr) {
     const auto from = ((m < nchk2 / 2) ? allEdges.cbegin() : allEdges.cbegin() + nchk2 - m);
     const auto to   = ((m < nchk2 / 2) ? allEdges.cbegin() + m : allEdges.cend());
     // Separate each vertex's adjacency list
-    std::vector<std::vector<adj_pair>> adjList(n);
+    std::vector<std::vector<AdjPair>> adjList(n);
     for (auto it = from; it != to; ++it) {
         auto& [u, p] = *it;
         if constexpr (impl::Graph<W>::isWeighted) {
@@ -144,7 +144,7 @@ Graph<W> makeRandom(const Vertex n, const Vertex m, Distr& distr) {
     result << n << ' ' << m << ' ';
     for (const auto& lst : adjList) {
         result << lst.size() << ' ';
-        for (const auto& v : lst) {
+        for (const AdjPair& v : lst) {
             if constexpr (impl::Graph<W>::isWeighted) {
                 result << v.first << ' ' << v.second << ' ';
             } else {

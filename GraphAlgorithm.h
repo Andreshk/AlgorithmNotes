@@ -51,21 +51,20 @@ std::vector<Edge<W>> MST(const WeightedGraph<W>& graph) {
 //   }
 //   std::cout << "\n\n";
 template <typename W>
-std::vector<typename WeightedGraph<W>::adj_pair> Dijkstra(const WeightedGraph<W>& graph, const Vertex u) {
-    using adj_pair = typename WeightedGraph<W>::adj_pair;
+std::vector<typename WeightedGraph<W>::AdjPair> Dijkstra(const WeightedGraph<W>& graph, const Vertex u) {
+    using AdjPair = typename WeightedGraph<W>::AdjPair;
     const size_t n = graph.numVertices();
     const W infinity = std::numeric_limits<W>::max();
-    std::vector<adj_pair> result(n);
+    std::vector<AdjPair> result(n);
     for (Vertex i = 0; i < n; ++i) {
         result[i] = { i, infinity };
     }
-    PairingHeap<Edge<W>> ph{};
+    PairingHeap<AdjPair> ph{};
     std::vector<decltype(ph)::proxy> proxies(n);
     std::vector<bool> visited(n, false);
-    proxies[u] = ph.insert({ u,u,0 });
+    proxies[u] = ph.insert({ u,0 });
     while (!ph.empty()) {
-        const auto [v, pred, dist] = ph.extractMin();
-        result[v].first  = pred;
+        const auto [v, dist] = ph.extractMin();
         result[v].second = dist;
         visited[v] = true;
         proxies[v] = decltype(ph)::proxy{};
@@ -74,11 +73,12 @@ std::vector<typename WeightedGraph<W>::adj_pair> Dijkstra(const WeightedGraph<W>
         for (auto it = from; it != to; ++it) {
             const auto& [v1, w] = *it;
             if (!visited[v1]) {
-                const Edge<W> newEdge{ v1,v,dist + w };
+                const AdjPair newEdge{ v1,dist + w };
                 if (!proxies[v1]) {
                     proxies[v1] = ph.insert(newEdge);
-                } else {
-                    ph.decreaseKey(proxies[v1], newEdge);
+                    result[v1].first = v;
+                } else if (ph.decreaseKey(proxies[v1], newEdge)) {
+                    result[v1].first = v;
                 }
             }
         }
