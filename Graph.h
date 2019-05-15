@@ -103,15 +103,15 @@ Graph<W> makeRandom(const Vertex n, const Vertex m, Distr& distr) {
     vassert(m <= nchk2);
     static std::mt19937_64 eng{ uint64_t(std::chrono::steady_clock::now().time_since_epoch().count()) };
     // Create an array, containing all possible edges
-    using W1 = std::conditional_t<Graph<W>::isWeighted, W, int>;
-    std::vector<Edge<W1>> allEdges(nchk2); // to-do: use std::pair<Vertex,Graph<W>::adj_pair>
+    using adj_pair = typename impl::Graph<W>::adj_pair;
+    std::vector<std::pair<Vertex,adj_pair>> allEdges(nchk2);
     size_t idx = 0;
     for (Vertex i = 0; i < n; ++i)
         for (Vertex j = i + 1; j < n; ++j)
-            if constexpr (Graph<W>::isWeighted) {
-                allEdges[idx++] = { i,j,distr(eng) };
+            if constexpr (impl::Graph<W>::isWeighted) {
+                allEdges[idx++] = { i,{j,distr(eng)} };
             } else {
-                allEdges[idx++] = { i,j,0 };
+                allEdges[idx++] = { i,j };
             }
     // Use Fisher-Yates shuffle to generate a makeRandom subset of m edges.
     // (select either m or nchk2-m edges, depending on which is smaller)
@@ -124,11 +124,18 @@ Graph<W> makeRandom(const Vertex n, const Vertex m, Distr& distr) {
     const auto from = ((m < nchk2 / 2) ? allEdges.cbegin() : allEdges.cbegin() + nchk2 - m);
     const auto to   = ((m < nchk2 / 2) ? allEdges.cbegin() + m : allEdges.cend());
     // Separate each vertex's adjacency list
-    std::vector<std::vector<typename Graph<W1>::adj_pair>> adjList(n);
+    std::vector<std::vector<adj_pair>> adjList(n);
     for (auto it = from; it != to; ++it) {
-        //std::cout << it->u << ' ' << it->v << ", ";
-        adjList[it->u].push_back({ it->v, it->w });
-        adjList[it->v].push_back({ it->u, it->w });
+        auto& [u, p] = *it;
+        if constexpr (impl::Graph<W>::isWeighted) {
+            auto& [v, w] = p;
+            adjList[u].push_back({ v, w });
+            adjList[v].push_back({ u, w });
+        } else {
+            auto v = p;
+            adjList[u].push_back(v);
+            adjList[v].push_back(u);
+        }
     }
     // We don't need the edges anymore, and clear() may not deallocate the memory
     { decltype(allEdges) dummy{}; allEdges.swap(dummy); } // dummy goes out of scope and is destroyed
@@ -141,7 +148,7 @@ Graph<W> makeRandom(const Vertex n, const Vertex m, Distr& distr) {
             if constexpr (impl::Graph<W>::isWeighted) {
                 result << v.first << ' ' << v.second << ' ';
             } else {
-                result << v.first << ' ';
+                result << v << ' ';
             }
         }
     }
