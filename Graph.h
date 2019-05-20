@@ -25,7 +25,7 @@ bool operator<(const Edge<W>& lhs, const Edge<W>& rhs) { return (lhs.w < rhs.w);
 // An implementation class handles directionality. Not meant to be used directly (!)
 namespace impl {
 template <typename W> class Graph;
-template <typename W, typename Distr> Graph<W> makeRandom(const Vertex n, const Vertex m, Distr& distr);
+template <typename W, typename Distr> Graph<W> makeRandom(const size_t n, const size_t m, Distr& distr);
 }
 
 // The user-facing types are "Graph" (for unweighted graphs) and "WeightedGraph<T>"
@@ -42,11 +42,18 @@ template <typename W>
 WeightedGraph<W> makeRandomWeighted(const Vertex n, const Vertex m, const W wmin, const W wmax);
 
 namespace impl {
+// A vertex-weight pair. Used both by the Graph internally, as well as
+// for "predecessor-distance" pair in Dijkstra & Prim algorithms.
+template <typename W>
+struct AdjPair { Vertex v; W w; };
+template <typename W>
+bool operator<(const AdjPair<W>& lhs, const AdjPair<W>& rhs) { return (lhs.w < rhs.w); }
+
 template <typename W>
 class Graph {
 public:
     static const bool isWeighted = !std::is_void_v<W>;
-    using AdjPair  = std::conditional_t<isWeighted, std::pair<Vertex, W>, Vertex>;
+    using AdjPair  = std::conditional_t<isWeighted, impl::AdjPair<W>, Vertex>;
     using iterator = const AdjPair*;
 private:
     std::unique_ptr<AdjPair[]> neighbours;
@@ -66,9 +73,9 @@ public:
             for (size_t j = 0; j < numNeighbs; ++j) {
                 Vertex v = 0; // Used for debugging purposes only
                 if constexpr (isWeighted) {
-                    is >> neighbours[currOff].first;
-                    is >> neighbours[currOff].second;
-                    v = neighbours[currOff].first;
+                    is >> neighbours[currOff].v;
+                    is >> neighbours[currOff].w;
+                    v = neighbours[currOff].v;
                 } else {
                     is >> neighbours[currOff];
                     v = neighbours[currOff];
@@ -98,7 +105,7 @@ public:
 };
 
 template <typename W, typename Distr>
-Graph<W> makeRandom(const Vertex n, const Vertex m, Distr& distr) {
+Graph<W> makeRandom(const size_t n, const size_t m, Distr& distr) {
     const size_t nchk2 = n * (n - 1) / 2; // Maximum number of edges
     vassert(m <= nchk2);
     static std::mt19937_64 eng{ uint64_t(std::chrono::steady_clock::now().time_since_epoch().count()) };
@@ -144,11 +151,11 @@ Graph<W> makeRandom(const Vertex n, const Vertex m, Distr& distr) {
     result << n << ' ' << m << ' ';
     for (const auto& lst : adjList) {
         result << lst.size() << ' ';
-        for (const AdjPair& v : lst) {
+        for (const AdjPair& p : lst) {
             if constexpr (impl::Graph<W>::isWeighted) {
-                result << v.first << ' ' << v.second << ' ';
+                result << p.v << ' ' << p.w << ' ';
             } else {
-                result << v << ' ';
+                result << p << ' ';
             }
         }
     }
@@ -158,13 +165,13 @@ Graph<W> makeRandom(const Vertex n, const Vertex m, Distr& distr) {
 
 // We can now delegate generating of weighted & unweighted
 // graphs to the single function in namespace impl.
-Graph makeRandomUnweighted(const Vertex n, const Vertex m) {
+Graph makeRandomUnweighted(const size_t n, const size_t m) {
     using Distr = std::uniform_int_distribution<int>;
     Distr dummy{}; // Dummy distribution, will not be used.
     return impl::makeRandom<void, Distr>(n, m, dummy);
 }
 template <typename W>
-WeightedGraph<W> makeRandomWeighted(const Vertex n, const Vertex m, const W wmin, const W wmax) {
+WeightedGraph<W> makeRandomWeighted(const size_t n, const size_t m, const W wmin, const W wmax) {
     static_assert(std::is_integral_v<W> || std::is_floating_point_v<W>,
         "Only numeric weights are supported for random graph generation!");
     using Distr = std::conditional_t<std::is_integral_v<W>, std::uniform_int_distribution<W>, std::uniform_real_distribution<W>>;
