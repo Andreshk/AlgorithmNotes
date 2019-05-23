@@ -8,29 +8,27 @@
 #include <chrono>
 #include <random>
 #include <sstream>
-#include <algorithm> // std::swap
+#include <algorithm> // std::swap. std::exchange
 
 #include <cassert>
 #define vassert assert
 
 // As standard, vertices will be labeled with consecutive nonnegative numbers
 using Vertex = size_t;
-// A weighted edge will be represented by a simple tuple-like
-// struct, and will be ordered according to their weight
+// A weighted edge will be represented by a simple
+// tuple-like struct, and will be ordered by weight.
 template <typename W>
 struct Edge { Vertex u, v; W w; };
 template <typename W>
 bool operator<(const Edge<W>& lhs, const Edge<W>& rhs) { return (lhs.w < rhs.w); }
 
 // An implementation class handles directionality. Not meant to be used directly (!)
-namespace impl {
-template <typename W> class Graph;
-template <typename W, typename Distr> Graph<W> makeRandom(const size_t n, const size_t m, Distr& distr);
-}
+namespace impl { template <typename W> class Graph; }
 
 // The user-facing types are "Graph" (for unweighted graphs) and "WeightedGraph<T>"
 using Graph = impl::Graph<void>;
-template <typename W> using WeightedGraph = impl::Graph<W>;
+template <typename W>
+using WeightedGraph = impl::Graph<W>;
 
 // Generate an undirected, unweighted graph with n vertices and m edges.
 // Warning: uses hard O(n^2) time & space due to explicit generation of all possible edges.
@@ -145,11 +143,11 @@ Graph<W> makeRandom(const size_t n, const size_t m, Distr& distr) {
         }
     }
     // We don't need the edges anymore, and clear() may not deallocate the memory
-    { decltype(allEdges) dummy{}; allEdges.swap(dummy); } // dummy goes out of scope and is destroyed
+    std::exchange(allEdges, {});
     // Serialize the adjacency list into the format, expected by impl::Graph<W> constructor
     std::stringstream result;
     result << n << ' ' << m << ' ';
-    for (const auto& lst : adjList) {
+    for (auto& lst : adjList) {
         result << lst.size() << ' ';
         for (const AdjPair& p : lst) {
             if constexpr (impl::Graph<W>::isWeighted) {
@@ -158,6 +156,8 @@ Graph<W> makeRandom(const size_t n, const size_t m, Distr& distr) {
                 result << p << ' ';
             }
         }
+        // Clear up, one adjacency list at a time
+        std::exchange(lst, {});
     }
     return Graph<W>{ result };
 }
