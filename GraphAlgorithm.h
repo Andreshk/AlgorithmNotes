@@ -1,7 +1,8 @@
 #pragma once
 #include "Graph.h"
 #include "UnionFind.h"
-#include "pairing_heap.h" // from Andreshk/AdvancedDataStructures repo
+#include "pairing_heap.h"        // from Andreshk/AdvancedDataStructures repo
+#include "pairing_heap_static.h" // from Andreshk/AdvancedDataStructures repo
 #include <vector>
 #include <algorithm> // std::sort
 
@@ -79,7 +80,7 @@ std::vector<typename WeightedGraph<W>::AdjPair> Dijkstra(const WeightedGraph<W>&
     proxies[u] = ph.insert({ u,0 });
     while (!ph.empty()) {
         const auto [v, dist] = ph.extractMin();
-        // Once a vertex is extracted, we know it's final distance from the start.
+        // Once a vertex is extracted, we know its final distance from the start.
         result[v].w = dist;
         visited[v] = true;
         proxies[v] = decltype(ph)::proxy{}; // the proxy is invalid anyways
@@ -103,6 +104,42 @@ std::vector<typename WeightedGraph<W>::AdjPair> Dijkstra(const WeightedGraph<W>&
     return result;
 }
 
+// Dijkstra's algorithm, using the specially adapted static pairing heap.
+template <typename W>
+std::vector<typename WeightedGraph<W>::AdjPair> DijkstraS(const WeightedGraph<W>& graph, const Vertex u) {
+    using AdjPair = typename WeightedGraph<W>::AdjPair;
+    const size_t n = graph.numVertices();
+    const W infinity = std::numeric_limits<W>::max();
+    // The result: for each vertex i, result[i].first is the predecessor of i,
+    // and result[i].second is the minimum distance from the starting vertex to i.
+    // Of course, if the predecessors aren't needed, this can be simplified to vector<W>.
+    std::vector<AdjPair> result(n);
+    for (Vertex i = 0; i < n; ++i) {
+        result[i] = { i, infinity };
+    }
+    // The data structure is at the core of the algorithm
+    PairingHeapStatic<W> ph{ n,u,W{ 0 },infinity };
+    while (!ph.empty()) {
+        const auto [v, dist] = ph.extractMin();
+        if (dist == infinity) {
+            break; // There are unreachable vertices from the start, so nothing more to do.
+        }
+        // Once a vertex is extracted, we know its final distance from the start.
+        result[v].w = dist;
+        const auto from = graph.vBegin(v);
+        const auto to   = graph.vEnd(v);
+        // Try inserting/relaxing each unvisited neighbour of the current vertex.
+        for (auto it = from; it != to; ++it) {
+            const auto& [v1, w] = *it;
+            if (ph.contains(v1) && ph.decreaseKey(v1, dist + w)) {
+                    // If decreaseKey() was successful, then v1 should have a new predecessor.
+                    result[v1].v = v;
+                }
+            }
+    }
+    return result;
+}
+
 // Example usage: same as Kruskal's algorithm
 template <typename W>
 std::vector<Edge<W>> Prim(const WeightedGraph<W>& graph) {
@@ -120,12 +157,21 @@ std::vector<Edge<W>> Prim(const WeightedGraph<W>& graph) {
     // These proxies allow us to access the values, stored in the heap for each vertex.
     std::vector<decltype(ph)::proxy> proxies(n);
     std::vector<bool> visited(n, false);
+    // The resulting array of the MST's edges.
+    std::vector<Edge<W>> treeEdges;
+    treeEdges.reserve(n - 1);
+    // This algorithm assumes that the graph is connected, and the MST can be
+    // built, staring from any vertex - so we choose to start from vertex 0.
     // In the beginning, all vertices are at distance infinity.
-    proxies[0] = ph.insert({ 0,0 });
+    const Vertex start = 0;
+    proxies[start] = ph.insert({ start,0 });
     while (!ph.empty()) {
         const auto [v, dist] = ph.extractMin();
+        //preds[v].w = dist;
         // Once a vertex is extracted, it is considered added to the MST.
-        preds[v].w = dist;
+        if (v != start) { // No need to "add" the starting vertex 0
+            treeEdges.push_back({ preds[v].v, v, dist });
+        }
         visited[v] = true;
         proxies[v] = decltype(ph)::proxy{}; // the proxy is invalid anyways
         const auto from = graph.vBegin(v);
@@ -134,7 +180,7 @@ std::vector<Edge<W>> Prim(const WeightedGraph<W>& graph) {
         for (auto it = from; it != to; ++it) {
             const auto& [v1, w] = *it;
             if (!visited[v1]) {
-                const AdjPair newEdge{ v1, w };
+                const AdjPair newEdge{ v1, w }; // Here is the ONLY difference with Dijkstra's algorithm (!)
                 if (!proxies[v1]) { // Insert a vertex into the heap
                     proxies[v1] = ph.insert(newEdge);
                     preds[v1].v = v;
@@ -143,15 +189,6 @@ std::vector<Edge<W>> Prim(const WeightedGraph<W>& graph) {
                     preds[v1].v = v;
                 }
             }
-        }
-    }
-    std::vector<Edge<W>> treeEdges;
-    treeEdges.reserve(n - 1);
-    // Skip vertex 0, since we started building the MST from it.
-    for (Vertex i = 1; i < n; ++i) {
-        const auto& [v, w] = preds[i];
-        if (w != infinity) {
-            treeEdges.push_back({ i,v,w });
         }
     }
     return treeEdges;
