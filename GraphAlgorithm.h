@@ -1,6 +1,7 @@
 #pragma once
 #include "Graph.h"
 #include "UnionFind.h"
+#include "binary_heap_static.h   // from Andreshk/AdvancedDataStructures repo
 #include "pairing_heap.h"        // from Andreshk/AdvancedDataStructures repo
 #include "pairing_heap_static.h" // from Andreshk/AdvancedDataStructures repo
 #include <vector>
@@ -104,8 +105,12 @@ std::vector<typename WeightedGraph<W>::AdjPair> Dijkstra(const WeightedGraph<W>&
     return result;
 }
 
-// Dijkstra's algorithm, using the specially adapted static pairing heap.
-template <typename W>
+// Dijkstra's algorithm, using the specially adapted "static" heaps:
+// PairingHeapStatic and BinaryHeapStatic. Example usage:
+//   const auto g = makeRandomWeighted<int>(8, 15, 1, 5);
+//   const auto dists1 = DijkstraS<PairingHeapStatic>(g, 0);
+//   const auto dists2 = DijkstraS<BinaryHeapStatic>(g, 0);
+template <template<class> class StaticHeap, typename W>
 std::vector<typename WeightedGraph<W>::AdjPair> DijkstraS(const WeightedGraph<W>& graph, const Vertex u) {
     using AdjPair = typename WeightedGraph<W>::AdjPair;
     const size_t n = graph.numVertices();
@@ -118,7 +123,7 @@ std::vector<typename WeightedGraph<W>::AdjPair> DijkstraS(const WeightedGraph<W>
         result[i] = { i, infinity };
     }
     // The data structure is at the core of the algorithm
-    PairingHeapStatic<W> ph{ n,u,W{ 0 },infinity };
+    StaticHeap<W> ph{ n,u,W{ 0 },infinity };
     while (!ph.empty()) {
         const auto [v, dist] = ph.extractMin();
         if (dist == infinity) {
@@ -128,7 +133,7 @@ std::vector<typename WeightedGraph<W>::AdjPair> DijkstraS(const WeightedGraph<W>
         result[v].w = dist;
         const auto from = graph.vBegin(v);
         const auto to   = graph.vEnd(v);
-        // Try inserting/relaxing each unvisited neighbour of the current vertex.
+        // Try relaxing each unvisited neighbour of the current vertex.
         for (auto it = from; it != to; ++it) {
             const auto& [v1, w] = *it;
             if (ph.contains(v1) && ph.decreaseKey(v1, dist + w)) {
