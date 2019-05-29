@@ -1,7 +1,7 @@
 #pragma once
 #include "Graph.h"
 #include "UnionFind.h"
-#include "binary_heap_static.h   // from Andreshk/AdvancedDataStructures repo
+#include "binary_heap_static.h"  // from Andreshk/AdvancedDataStructures repo
 #include "pairing_heap.h"        // from Andreshk/AdvancedDataStructures repo
 #include "pairing_heap_static.h" // from Andreshk/AdvancedDataStructures repo
 #include <vector>
