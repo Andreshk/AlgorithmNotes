@@ -167,7 +167,9 @@ std::vector<Edge<W>> Prim(const WeightedGraph<W>& graph) {
     treeEdges.reserve(n - 1);
     // This algorithm assumes that the graph is connected, and the MST can be
     // built, staring from any vertex - so we choose to start from vertex 0.
-    // In the beginning, all vertices are at distance infinity.
+    // Otherwise, place the rest of this function in a loop over the unvisited
+    // for (Vertex start = 0; start < n; ++start) if (!visited[start]) { ... }
+    // - this will make an MST for each of the connected components.
     const Vertex start = 0;
     proxies[start] = ph.insert({ start,0 });
     while (!ph.empty()) {
