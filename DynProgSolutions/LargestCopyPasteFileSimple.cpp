@@ -1,8 +1,10 @@
 #include "DynProgProblems.h"
+#include <fmt/core.h>
+#include <ranges> // std::views::reverse
 
 // T(n) = O(n), M(n) = O(n)
 void largestCopyPasteFileSimple(const int n) {
-    vassert(n <= 189); // n = 190 overflows uint64
+    assert(n <= 189); // n = 190 overflows uint64
     // Closed formula:
     // return ((3 + n%3) * (1ui64 << (n / 3 - 1)));
     // T(n) = O(1), M(n) = O(1), f(n) = Theta(2^(n/3))
@@ -10,14 +12,15 @@ void largestCopyPasteFileSimple(const int n) {
     std::vector<uint64_t> M(n + 1, 0);
     M[1] = 1;
     M[2] = 2;
-    for (int k = 3; k <= n; k++)
+    for (int k = 3; k <= n; k++) {
         M[k] = max(M[k - 1] + 1, M[k - 1], M[k - 2], 2 * M[k - 3]);
+    }
     //return M[n];
 
-    std::cout << "The largest possible filesize with " << n << " keystrokes is: " << M[n] << "\n";
+    fmt::print("The largest possible filesize with {} keystrokes is: {}\n", n, M[n]);
 
     std::vector<Key> keystrokes;
-    int idx = n;
+    size_t idx = n;
     while (idx > 0) {
         if (M[idx] == M[idx - 1] + 1) {
             keystrokes.push_back(Key::A); --idx;
@@ -29,13 +32,14 @@ void largestCopyPasteFileSimple(const int n) {
             keystrokes.push_back(Key::CtrlV); idx -= 3;
         }
     }
-    std::reverse(keystrokes.begin(), keystrokes.end());
-    for (Key k : keystrokes)
+
+    for (Key k : std::views::reverse(keystrokes)) {
         switch (k) {
-        case Key::A:     std::cout << "\'a\'\n"; break;
-        case Key::CtrlA: std::cout << "Ctrl-A\n"; break;
-        case Key::CtrlC: std::cout << "Ctrl-A Ctrl-C\n"; break;
-        case Key::CtrlV: std::cout << "Ctrl-A Ctrl-C Ctrl-V\n"; break;
+        case Key::A:     { fmt::print("\'a\'\n"); break; }
+        case Key::CtrlA: { fmt::print("Ctrl-A\n"); break; }
+        case Key::CtrlC: { fmt::print("Ctrl-A Ctrl-C\n"); break; }
+        case Key::CtrlV: { fmt::print("Ctrl-A Ctrl-C Ctrl-V\n"); break; }
         }
-    std::cout << '\n';
+    }
+    fmt::print("\n");
 }

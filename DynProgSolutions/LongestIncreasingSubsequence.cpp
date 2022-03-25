@@ -1,7 +1,10 @@
 #include "DynProgProblems.h"
+#include <fmt/core.h>
+#include <fmt/ranges.h>
+#include <algorithm> // std::ranges::{max,max_element}
 
 // T(n) = O(n^2), M(n) = O(n)
-void longestIncreasingSubsequence(const std::vector<int>& values) {
+void longestIncreasingSubsequence(std::span<const int> values) {
     /* Note:
      * building a graph leads to T(n) = O(n^2), but M(n) = O(n+m),
      * since the process is always slow and we need additional memory
@@ -13,27 +16,22 @@ void longestIncreasingSubsequence(const std::vector<int>& values) {
     for (int i = count - 1; i >= 0; --i) {
         M[i] = 1;
         successors[i] = count;
-        for (int j = i + 1; j < count; j++)
+        for (int j = i + 1; j < count; j++) {
             if (values[i] < values[j] && M[i] < M[j] + 1) {
                 M[i] = M[j] + 1;
                 successors[i] = j;
             }
+        }
     }
-    // Find the maximum value
-    int maxIdx = 0;
-    for (int i = 1; i < count; i++)
-        if (M[maxIdx] < M[i])
-            maxIdx = i;
-    //return M[maxIdx];
+    //return std::ranges::max(M);
 
-    std::cout << "Longest increasing subsequence of:\n";
-    for (const int x : values)
-        std::cout << x << ' ';
-    std::cout << "is:\n";
+    // Find the maximum value
+    const int maxIdx = int(std::distance(M.begin(), std::ranges::max_element(M)));
+    fmt::print("Longest increasing subsequence of {}\nis:", values);
     int nextIdx = maxIdx;
     while (nextIdx != count) {
-        std::cout << values[nextIdx] << ' ';
+        fmt::print(" {}", values[nextIdx]);
         nextIdx = successors[nextIdx];
     }
-    std::cout << "\nLength = " << M[maxIdx] << "\n\n";
+    fmt::print("\nLength = {} \n\n", M[maxIdx]);
 }

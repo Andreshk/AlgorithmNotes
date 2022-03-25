@@ -1,12 +1,15 @@
 #include "DynProgProblems.h"
+#include <fmt/core.h>
+#include <fmt/ranges.h>
 
-// T(n) = O(n), M(n) = O(1). The last 3 should inly be used by MaximumSubmatrixSum
-void maximumSubarraySum(const std::vector<int>& values, int* result, int* from, int* to) {
+// T(n) = O(n), M(n) = O(1). The last 3 are used by maximumSubmatrixSum only
+void maximumSubarraySum(std::span<const int> values, int* result, int* from, int* to) {
     const int n = int(values.size());
+    // Negative values in the beginning of the array can be discarded
     int first = 0;
-    while (first < n && values[first] < 0)
+    while (first < n && values[first] < 0) {
         ++first;
-
+    }
     int bestFrom = first, bestTo = first, currFrom = first;
     int current = values[first], best = values[first];
     if (first == n) {
@@ -32,9 +35,7 @@ void maximumSubarraySum(const std::vector<int>& values, int* result, int* from, 
         *from = bestFrom;
         *to = bestTo;
     } else {
-        std::cout << "The maximum subarray sum for the array";
-        for (int v : values)
-            std::cout << ' ' << v;
-        std::cout << " is: " << best << "\nThe subarray starts at index: " << bestFrom << " and ends at index: " << bestTo << "\n\n";
+        fmt::print("The maximum subarray sum for the array {} is: {}\n", values, best);
+        fmt::print("The subarray starts at index: {} and ends at index: {}\n\n", bestFrom, bestTo);
     }
 }
