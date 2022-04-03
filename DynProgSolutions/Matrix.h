@@ -67,7 +67,7 @@ public:
         return valueFormatter.parse(ctx);
     }
     template <typename FormatContext>
-    auto format(const Matrix<T>& m, FormatContext& ctx) {
+    auto format(const Matrix<T>& m, FormatContext& ctx) const {
         for (int row = 0; row < m.rows(); ++row) {
             if (row > 0) {
                 *ctx.out()++ = '\n';
