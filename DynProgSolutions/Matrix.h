@@ -70,11 +70,11 @@ public:
     auto format(const Matrix<T>& m, FormatContext& ctx) {
         for (int row = 0; row < m.rows(); ++row) {
             if (row > 0) {
-                fmt::format_to(ctx.out(), "\n");
+                *ctx.out()++ = '\n';
             }
             for (int col = 0; col < m.cols(); ++col) {
                 if (col > 0) {
-                    fmt::format_to(ctx.out(), " ");
+                    *ctx.out()++ = ' ';
                 }
                 valueFormatter.format(m[row][col], ctx);
             }
