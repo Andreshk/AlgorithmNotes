@@ -13,7 +13,8 @@ void largestCopyPasteFileSimple(const int n) {
     M[1] = 1;
     M[2] = 2;
     for (int k = 3; k <= n; k++) {
-        M[k] = max(M[k - 1] + 1, M[k - 1], M[k - 2], 2 * M[k - 3]);
+        M[k] = std::max(std::max(M[k - 1] + 1, M[k - 1]),
+                        std::max(M[k - 2], 2 * M[k - 3]));
     }
     //return M[n];
 
@@ -33,7 +34,7 @@ void largestCopyPasteFileSimple(const int n) {
         }
     }
 
-    for (Key k : std::views::reverse(keystrokes)) {
+    for (const Key k : std::views::reverse(keystrokes)) {
         switch (k) {
         case Key::A:     { fmt::print("\'a\'\n"); break; }
         case Key::CtrlA: { fmt::print("Ctrl-A\n"); break; }

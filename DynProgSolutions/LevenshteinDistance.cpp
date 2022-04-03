@@ -14,9 +14,8 @@ void LevenshteinDistance(std::string_view str1, std::string_view str2) {
     }
     for (int i = 1; i <= n; i++) {
         for (int j = 1; j <= m; j++) {
-            M[i][j] = min(M[i - 1][j] + 1,
-                M[i][j - 1] + 1,
-                M[i - 1][j - 1] + ((str1[i - 1] == str2[j - 1]) ? 0 : 1));
+            M[i][j] = std::min(std::min(M[i - 1][j] + 1, M[i][j - 1] + 1),
+                               M[i - 1][j - 1] + ((str1[i - 1] == str2[j - 1]) ? 0 : 1));
         }
     }
     //return M[n][m];

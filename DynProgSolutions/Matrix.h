@@ -1,20 +1,20 @@
 #pragma once
 #include <fmt/core.h>
-#include <fmt/ranges.h>
 #include <vector>
 #include <span>
-#include <algorithm> // std::{min,max}
 #include <initializer_list>
 
 #include <cassert>
 
 template<class T>
 class Matrix {
-    using MatrixInitializerList = std::initializer_list<std::initializer_list<T>>;
-
-    std::vector<T> values;
+    // Avoid dealing with vector<bool> by using a vector of some other 1-byte type.
+    static constexpr bool isBool = std::is_same_v<std::remove_cv_t<T>, bool>;
+    using U = std::conditional_t<isBool, std::uint8_t, T>;
+    std::vector<U> values;
     int n, m; // row & column count, respectively
 
+    using MatrixInitializerList = std::initializer_list<std::initializer_list<T>>;
     void init(MatrixInitializerList il) {
         values.clear();
         n = int(il.size());
@@ -29,7 +29,7 @@ class Matrix {
         }
     }
 public:
-    Matrix(int _n, int _m, const T& _val = T{}) : values(_n* _m, _val), n(_n), m(_m) {}
+    Matrix(int _n, int _m, const T& _val = T{}) : values(_n*_m, _val), n(_n), m(_m) {}
     /* allows for the following:
      * Matrix<int> m1{ {1,2,3}, {4,5,6} };
      * Matrix<int> m2 = { {1,2,3}, {4,5,6} };
@@ -38,48 +38,47 @@ public:
      */
     Matrix(MatrixInitializerList il) { init(il); }
     Matrix& operator=(MatrixInitializerList il) { init(il); return *this; }
-
+    // Warning: no bounds checking for the second dimension, even in debug mode!
+    // We are waiting for multi-dimensional operator[] (P2128)
     T* operator[](int row) {
         assert(row >= 0 && row < n);
-        return values.data() + m*row;
+        return reinterpret_cast<T*>(values.data()) + m*row;
     }
     const T* operator[](int row) const {
         assert(row >= 0 && row < n);
-        return values.data() + m*row;
+        return reinterpret_cast<const T*>(values.data()) + m*row;
     }
+    // Bounds-safe alternative to operator[], returning a zero value on invalid input.
     T at(int i, int j) const {
-        // bounds-safe alternative to operator[],
-        // returning a default value on invalid input
         return ((i < 0 || j < 0 || i >= n || j >= m) ? T{} : (*this)[i][j]);
     }
     int rows() const { return n; }
     int cols() const { return m; }
 };
 
-// Matrices can be formatted, even supporting the same formatting attributes as ranges
+// Matrices can be formatted, too, even using the same attributes as the contained values,
+// f.e. fmt::print("{:{}}", m, pad) for padding each individual value to some length.
 template<class T>
-struct fmt::formatter<Matrix<T>> : formatter<std::span<const T>> {
+class fmt::formatter<Matrix<T>> {
+    fmt::formatter<T> valueFormatter;
+public:
+    template <typename ParseContext>
+    constexpr auto parse(ParseContext& ctx) {
+        return valueFormatter.parse(ctx);
+    }
     template <typename FormatContext>
     auto format(const Matrix<T>& m, FormatContext& ctx) {
-        fmt::format_to(ctx.out(), "[");
         for (int row = 0; row < m.rows(); ++row) {
             if (row > 0) {
-                fmt::format_to(ctx.out(), "\n ");
+                fmt::format_to(ctx.out(), "\n");
             }
-            formatter<std::span<const T>>::format({ m[row], size_t(m.cols()) }, ctx);
+            for (int col = 0; col < m.cols(); ++col) {
+                if (col > 0) {
+                    fmt::format_to(ctx.out(), " ");
+                }
+                valueFormatter.format(m[row][col], ctx);
+            }
         }
-        fmt::format_to(ctx.out(), "]");
         return ctx.out();
     }
 };
-
-// Other useful stuff
-template<class T>
-T min(const T& a, const T& b, const T& c) {
-    return std::min(std::min(a, b), c);
-}
-
-template<class T>
-T max(const T& a, const T& b, const T& c, const T& d) {
-    return std::max(std::max(a, b), std::max(c, d));
-}

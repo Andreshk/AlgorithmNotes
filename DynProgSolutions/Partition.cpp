@@ -11,8 +11,7 @@ void Partition(std::span<const int> values) {
     assert(S % 2 == 0);
     S /= 2;
     const int n = int(values.size());
-    // we have to fake booleans with ints, because std::vector<bool> is s#!t
-    Matrix<int> M(n, S + 1, 0);
+    Matrix<bool> M(n, S + 1, 0);
     for (int P = 1; P <= S; P++) {
         M[0][P] = (P == values[0]);
     }
@@ -25,7 +24,7 @@ void Partition(std::span<const int> values) {
             }
         }
     }
-    // return bool(M[n - 1][S]);
+    // return M[n - 1][S];
 
     if (!M[n - 1][S]) {
         fmt::print("There is no possible partition for the multiset\n{}\n\n", values);
