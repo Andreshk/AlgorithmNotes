@@ -51,3 +51,12 @@ void largestCopyPasteFile(const int n);
 void pictureProfit(std::span<const int> values);
 
 void minimumSquareCount(const int n);
+
+// Generates all integer partitions via a coroutine, with or without dupicates (by default, without).
+#include <cppcoro/generator.hpp> // Preferably from https://github.com/andreasbuhr/cppcoro
+cppcoro::generator<std::span<const int>> integerPartitionsGen(const int n, const bool printAll = false);
+/* Example usage:
+ * for (auto part : integerPartitionsGen(n)) {
+ *     fmt::print("{}\n", fmt::join(part, "+"));
+ * }
+ */

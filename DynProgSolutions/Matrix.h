@@ -1,9 +1,7 @@
 #pragma once
 #include <fmt/core.h>
 #include <vector>
-#include <span>
 #include <initializer_list>
-
 #include <cassert>
 
 template<class T>
