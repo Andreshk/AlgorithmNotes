@@ -1,22 +1,13 @@
 #include "DynProgProblems.h"
-#include <numeric> // std::accumulate, for debugging only
-#include <cassert>
 
 cppcoro::generator<std::span<const int>> integerPartitionsGen(const int n, const bool printAll) {
     std::vector<int> xs(n, 0); // At most n numbers add up to n (all ones)
-    // Begin filling the first partition (note that [n] is not a valid partition)
-    xs[0] = n - 1;
+    // Initialize with the first, trivial partition [n]
+    xs[0] = n;
     int pos = 1; // Index of the next number in xs to be filled
-    int rest = 1; // Invariant: rest == n - Sum(xs[0..pos))
+    int rest = 0; // Invariant: rest == n - Sum(xs[0..pos))
+    // Each iteration advances from one partition to the next
     while (true) {
-        // Check the invariant
-        assert(rest == n - std::accumulate(xs.begin(), xs.begin() + pos, 0));
-        // Fill the rest ot this partition
-        while (rest > 0) {
-            xs[pos] = (printAll ? rest : std::min(rest, xs[pos - 1]));
-            rest -= xs[pos];
-            ++pos;
-        }
         co_yield { xs.begin(), xs.begin() + pos }; // This is xs[0..pos)
         if (pos == n) { // This was the last partition: 1+...+1
             break;
@@ -24,10 +15,16 @@ cppcoro::generator<std::span<const int>> integerPartitionsGen(const int n, const
         while (xs[--pos] == 1) { // Unroll until we reach a number that can be decreased
             ++rest; // same as rest += xs[idx]
         }
-        // Decrease and prepare to fill up the remaining numbers of the next partition
+        // Decrease one number to "switch" to the next partition
         --xs[pos];
         ++rest;
         ++pos;
+        // Fill the rest of it
+        while (rest > 0) {
+            xs[pos] = (printAll ? rest : std::min(rest, xs[pos - 1]));
+            rest -= xs[pos];
+            ++pos;
+        }
     }
 }
 
