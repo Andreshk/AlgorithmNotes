@@ -3,12 +3,12 @@
 #include <cassert>
 
 cppcoro::generator<std::span<const int>> integerPartitionsGen(const int n, const bool printAll) {
-	std::vector<int> xs(n, 0); // At most n numbers add up to n (all ones)
+    std::vector<int> xs(n, 0); // At most n numbers add up to n (all ones)
     // Begin filling the first partition (note that [n] is not a valid partition)
     xs[0] = n - 1;
-	int pos = 1; // Index of the next number in xs to be filled
-	int rest = 1; // Invariant: rest == n - Sum(xs[0..pos))
-	while (true) {
+    int pos = 1; // Index of the next number in xs to be filled
+    int rest = 1; // Invariant: rest == n - Sum(xs[0..pos))
+    while (true) {
         // Check the invariant
         assert(rest == n - std::accumulate(xs.begin(), xs.begin() + pos, 0));
         // Fill the rest ot this partition
@@ -28,7 +28,7 @@ cppcoro::generator<std::span<const int>> integerPartitionsGen(const int n, const
         --xs[pos];
         ++rest;
         ++pos;
-	}
+    }
 }
 
 // Naive, recursive solution:
