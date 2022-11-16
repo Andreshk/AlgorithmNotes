@@ -37,7 +37,7 @@ cppcoro::recursive_generator<std::span<const int>>
     if (rest == 0) {
         co_yield xs.subspan(0, pos);
     } else {
-        int first = (pos == 0 ? rest - 1 : (printAll ? rest : std::min(rest, xs[pos - 1])));
+        int first = (printAll || pos == 0 ? rest : std::min(rest, xs[pos - 1]));
         for (; first >= 1; --first) {
             xs[pos] = first;
             co_yield partitionsHelper(xs, rest - first, pos + 1, printAll);

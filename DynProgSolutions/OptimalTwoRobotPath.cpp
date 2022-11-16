@@ -1,6 +1,8 @@
 #include "DynProgProblems.h"
 #include <string>
 #include <fmt/core.h>
+#include <algorithm> // std::ranges::max
+#include <ranges> // std::views::transform
 
 // T(n) = O(n^3), M(n) = O(n^3), where n^2 is the input size (!)
 // Again, can be reduced to M(n) = O(n^2), but without reconstructing the paths
@@ -52,12 +54,7 @@ void optimalTwoRobotPath(const Matrix<int>& field) {
         }
     }
     // Pretty-print the matrix better by padding each value
-    size_t pad = 1;
-    for (int row = 0; row < n; ++row) {
-        for (int col = 0; col < m; ++col) {
-            pad = std::max(pad, fmt::formatted_size("{}", field[row][col]));
-        }
-    }
+    const size_t pad = std::ranges::max(field | std::views::transform([](const int x) { return fmt::formatted_size("{}", x); }));
     fmt::print("{:{}}\n", field, pad);
     fmt::print("Maximum profit paths:\n{}\n{}\n", r1, r2);
     fmt::print("Maximum profit for two robots: {}.\n\n", M[0][0][0]);

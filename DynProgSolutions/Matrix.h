@@ -52,18 +52,17 @@ public:
     }
     int rows() const { return n; }
     int cols() const { return m; }
+    // Pointers are the poor man's iterators, but they work just fine here
+          T* begin()       { return (*this)[0]; }
+    const T* begin() const { return (*this)[0]; }
+          T* end()       { return (*this)[n-1]+m; }
+    const T* end() const { return (*this)[n-1]+m; }
 };
 
 // Matrices can be formatted, too, even using the same attributes as the contained values,
 // f.e. fmt::print("{:{}}", m, pad) for padding each individual value to some length.
 template<class T>
-class fmt::formatter<Matrix<T>> {
-    fmt::formatter<T> valueFormatter;
-public:
-    template <typename ParseContext>
-    constexpr auto parse(ParseContext& ctx) {
-        return valueFormatter.parse(ctx);
-    }
+struct fmt::formatter<Matrix<T>> : fmt::formatter<T> {
     template <typename FormatContext>
     auto format(const Matrix<T>& m, FormatContext& ctx) const {
         for (int row = 0; row < m.rows(); ++row) {
@@ -74,7 +73,7 @@ public:
                 if (col > 0) {
                     *ctx.out()++ = ' ';
                 }
-                valueFormatter.format(m[row][col], ctx);
+                fmt::formatter<T>::format(m[row][col], ctx);
             }
         }
         return ctx.out();
