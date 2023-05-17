@@ -3,7 +3,7 @@
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
-// T(n,S) = O(nS), M(n,S) = O(nS), can be reduced to M(n,S) = O(min(n,S))
+// T(n,S) = O(nS), M(n,S) = O(nS), can be reduced to M(n,S) = O(S)
 void minimumCoinCountLimited(std::span<const int> coins, const int S) {
     assert(S >= 0);
     const int n = int(coins.size());
