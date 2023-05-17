@@ -1,8 +1,8 @@
 #include "DynProgProblems.h"
-#include <string>
-#include <fmt/core.h>
-#include <algorithm> // std::ranges::max
-#include <ranges> // std::views::transform
+#include <string>     // Debugging & visualization only
+#include <fmt/core.h> // Debugging & visualization only
+#include <algorithm>  // std::ranges::max
+#include <ranges>     // std::views::transform
 
 // T(n) = O(n^3), M(n) = O(n^3), where n^2 is the input size (!)
 // Again, can be reduced to M(n) = O(n^2), but without reconstructing the paths
@@ -22,10 +22,10 @@ void optimalTwoRobotPath(const Matrix<int>& field) {
                 if (y1 < 0 || y1 >= m) { // Not all pairs of positions are possible (!)
                     continue;
                 }
-                int m = std::max(std::max(get(x1, x2, y2 + 1),
-                                          get(x1, x2 + 1, y2)),
-                                 std::max(get(x1 + 1, x2, y2 + 1),
-                                          get(x1 + 1, x2 + 1, y2)));
+                int m = std::max({ get(x1, x2, y2 + 1),
+                                   get(x1, x2 + 1, y2),
+                                   get(x1 + 1, x2, y2 + 1),
+                                   get(x1 + 1, x2 + 1, y2) });
                 if (m == minusInf) {
                     m = 0;
                 }
