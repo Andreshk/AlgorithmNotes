@@ -6,7 +6,7 @@
 // T(n,S) = O(nS), M(n,S) = O(S)
 void minimumCoinCount(std::span<const int> coins, const int S) {
     assert(S >= 0);
-    const int infinity = std::numeric_limits<int>::max();
+    constexpr int infinity = std::numeric_limits<int>::max() - 1; // -1 to avoid overflow later
     std::vector<int> M(S + 1, infinity);
     M[0] = 0;
     for (int x = 1; x <= S; x++) {

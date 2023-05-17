@@ -5,7 +5,7 @@
 
 void minimumCoinCount(std::span<const int> coins, const int S);
 
-void minimumCoinCountLimited(std::span<const size_t> coins, const size_t S);
+void minimumCoinCountLimited(std::span<const int> coins, const int S);
 
 void binomialCoefficient(const int n, const int k);
 
