@@ -23,7 +23,7 @@ void optimalMatrixMultiplication(std::span<const std::pair<int, int>> coords);
 
 void minimumPalindromSubstrings(std::string_view str);
 
-void minimumDeletionsToPalindrom(std::string_view str);
+void minimumDeletionsToPalindrome(std::string_view str);
 
 void nDigitIntegerCount(const int n, const int S);
 
