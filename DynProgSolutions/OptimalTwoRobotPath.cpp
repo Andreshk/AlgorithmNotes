@@ -10,11 +10,7 @@ void optimalTwoRobotPath(const Matrix<int>& field) {
     const int n = field.rows(), m = field.cols();
     constexpr int minusInf = std::numeric_limits<int>::min();
     // three dimensions, corresponding to x1,x2 & y2 (y1=x2+y2-x1)
-    std::vector<Matrix<int>> M(n, Matrix<int>(n, m, minusInf));
-    // for safe (but slow) accessing
-    auto get = [=, &M](int x1, int x2, int y2) {
-        return (x1 < n && x2 < n && y2 < m) ? M[x1][x2][y2] : minusInf;
-    };
+    std::vector<Matrix<int>> M(n + 1, Matrix<int>(n + 1, m + 1, minusInf));
     for (int x1 = n - 1; x1 >= 0; --x1) {
         for (int x2 = n - 1; x2 >= 0; --x2) {
             for (int y2 = m - 1; y2 >= 0; --y2) {
@@ -22,10 +18,10 @@ void optimalTwoRobotPath(const Matrix<int>& field) {
                 if (y1 < 0 || y1 >= m) { // Not all pairs of positions are possible (!)
                     continue;
                 }
-                int m = std::max({ get(x1, x2, y2 + 1),
-                                   get(x1, x2 + 1, y2),
-                                   get(x1 + 1, x2, y2 + 1),
-                                   get(x1 + 1, x2 + 1, y2) });
+                int m = std::max({ M[x1][x2][y2 + 1],
+                                   M[x1][x2 + 1][y2],
+                                   M[x1 + 1][x2][y2 + 1],
+                                   M[x1 + 1][x2 + 1][y2] });
                 if (m == minusInf) {
                     m = 0;
                 }

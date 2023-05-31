@@ -15,8 +15,7 @@ void optimalSingleRobotPath(const Matrix<int>& field) {
     }
     for (int i = n - 2; i >= 0; --i) {
         for (int j = m - 2; j >= 0; --j) {
-            M[i][j] = std::max(M[i][j], M[i + 1][j] + field[i][j]);
-            M[i][j] = std::max(M[i][j], M[i][j + 1] + field[i][j]);
+            M[i][j] = field[i][j] + std::max(M[i + 1][j], M[i][j + 1]);
         }
     }
     //return M[0][0];
