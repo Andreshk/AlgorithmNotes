@@ -1,7 +1,6 @@
 #include "DynProgProblems.h"
 #include "Matrix.h"
-#include <fmt/core.h>
-#include <fmt/ranges.h>
+#include <print>
 
 // T(n,S) = O(nS), M(n,S) = O(nS), can be reduced to M(n,S) = O(S)
 void minimumCoinCountLimited(std::span<const int> coins, const int S) {
@@ -21,20 +20,20 @@ void minimumCoinCountLimited(std::span<const int> coins, const int S) {
     }
     //return M[n][S];
 
-    fmt::print("S = {} with coins: {}\n", S, coins);
+    // (!) std::print("S = {} with coins: {}\n", S, coins);
     if (M[n][S] == infinity) {
-        fmt::print("It's impossible to gather the selected sum with these coins!\n");
+        std::print("It's impossible to gather the selected sum with these coins!\n");
     } else {
-        fmt::print("Minimum coin count is {}:", M[n][S]);
+        std::print("Minimum coin count is {}:", M[n][S]);
         for (int i = n, sum = S; sum != 0; --i) {
             for (const int c : coins) {
                 if (M[i][sum] == M[i - 1][sum - c] + 1) {
-                    fmt::print(" {}", c);
+                    std::print(" {}", c);
                     sum -= c;
                     break;
                 }
             }
         }
-        fmt::print("\n\n");
+        std::print("\n\n");
     }
 }

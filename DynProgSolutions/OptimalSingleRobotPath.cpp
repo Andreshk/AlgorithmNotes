@@ -1,5 +1,5 @@
 #include "DynProgProblems.h"
-#include <fmt/core.h>
+#include <print>
 
 // T(n,m) = O(nm), M(n,m) = O(nm) <- can be reduced to M(n,m) = O(min{n,m})
 void optimalSingleRobotPath(const Matrix<int>& field) {
@@ -20,17 +20,17 @@ void optimalSingleRobotPath(const Matrix<int>& field) {
     }
     //return M[0][0];
 
-    fmt::print("{}\n", field);
-    fmt::print("Maximum profit path: ");
+    std::print("{}\n", field);
+    std::print("Maximum profit path: ");
     int i = 0, j = 0;
     while (true) {
         if (i + 1 < n && M[i][j] == M[i + 1][j] + field[i][j]) {
-            fmt::print("D"); ++i;
+            std::print("D"); ++i;
         } else if (j + 1 < m && M[i][j] == M[i][j + 1] + field[i][j]) {
-            fmt::print("R"); ++j;
+            std::print("R"); ++j;
         } else {
             break; // we have reached the bottom
         }
     }
-    fmt::print("\nMaximum profit: {}\n\n", M[0][0]);
+    std::print("\nMaximum profit: {}\n\n", M[0][0]);
 }

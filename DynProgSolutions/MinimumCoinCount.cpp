@@ -1,6 +1,5 @@
 #include "DynProgProblems.h"
-#include <fmt/core.h>
-#include <fmt/ranges.h>
+#include <print>
 #include <vector>
 
 // T(n,S) = O(nS), M(n,S) = O(S)
@@ -18,21 +17,21 @@ void minimumCoinCount(std::span<const int> coins, const int S) {
     }
     // return M[S];
 
-    fmt::print("S = {} with coins: {}\n", S, coins);
+    // (!) std::print("S = {} with coins: {}\n", S, coins);
     if (M[S] == infinity) {
-        fmt::print("It's impossible to gather the selected sum with these coins!\n");
+        std::print("It's impossible to gather the selected sum with these coins!\n");
         return;
     } else {
-        fmt::print("Minimum coin count is {}:", M[S]);
+        std::print("Minimum coin count is {}:", M[S]);
         int sum = S;
         while (sum) {
             for (const int c : coins)
                 if (M[sum] == M[sum - c] + 1) {
-                    fmt::print(" {}", c);
+                    std::print(" {}", c);
                     sum -= c;
                     break;
                 }
         }
-        fmt::print("\n\n");
+        std::print("\n\n");
     }
 }

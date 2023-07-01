@@ -1,5 +1,5 @@
 #include "DynProgProblems.h"
-#include <fmt/core.h>
+#include <print>
 #include <ranges> // std::views::reverse
 
 // T(n) = O(n), M(n) = O(n)
@@ -18,7 +18,7 @@ void largestCopyPasteFileSimple(const int n) {
     }
     //return M[n];
 
-    fmt::print("The largest possible filesize with {} keystrokes is: {}\n", n, M[n]);
+    std::print("The largest possible filesize with {} keystrokes is: {}\n", n, M[n]);
 
     std::vector<Key> keystrokes;
     size_t idx = n;
@@ -36,11 +36,11 @@ void largestCopyPasteFileSimple(const int n) {
 
     for (const Key k : std::views::reverse(keystrokes)) {
         switch (k) {
-        case Key::A:     { fmt::print("\'a\'\n"); break; }
-        case Key::CtrlA: { fmt::print("Ctrl-A\n"); break; }
-        case Key::CtrlC: { fmt::print("Ctrl-A Ctrl-C\n"); break; }
-        case Key::CtrlV: { fmt::print("Ctrl-A Ctrl-C Ctrl-V\n"); break; }
+        case Key::A:     { std::print("\'a\'\n"); break; }
+        case Key::CtrlA: { std::print("Ctrl-A\n"); break; }
+        case Key::CtrlC: { std::print("Ctrl-A Ctrl-C\n"); break; }
+        case Key::CtrlV: { std::print("Ctrl-A Ctrl-C Ctrl-V\n"); break; }
         }
     }
-    fmt::print("\n");
+    std::print("\n");
 }

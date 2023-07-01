@@ -1,5 +1,4 @@
 #include "DynProgProblems.h"
-#include <fmt/core.h>
 
 // T(n) = O(n^3), M(n) = O(n^2)
 void maximumSubmatrixSum(const Matrix<int>& values) {
@@ -35,8 +34,8 @@ void maximumSubmatrixSum(const Matrix<int>& values) {
     }
     // return best;
 
-    fmt::print("{}\n", values);
-    fmt::print("The maximum submatrix sum is: {}\n", best);
-    fmt::print("with top left corner at [{}][{}] and bottom right corner at [{}][{}].\n\n",
+    std::print("{}\n", values);
+    std::print("The maximum submatrix sum is: {}\n", best);
+    std::print("with top left corner at [{}][{}] and bottom right corner at [{}][{}].\n\n",
         bestTop, bestLeft, bestBottom, bestRight);
 }

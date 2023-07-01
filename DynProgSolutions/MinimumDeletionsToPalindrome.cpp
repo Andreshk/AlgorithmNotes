@@ -42,6 +42,6 @@ void minimumDeletionsToPalindrome(std::string_view str) {
     }
     if (i == j) { back.push_back(str[i]); }
     std::ranges::reverse(back);
-    fmt::print("Longest palindromic subsequence\n for {}\n is: {}\n", str, front + back);
-    fmt::print("Minimum deletions to palindrome: {}\n", n - M[0][n - 1]);
+    std::print("Longest palindromic subsequence\n for {}\n is: {}\n", str, front + back);
+    std::print("Minimum deletions to palindrome: {}\n", n - M[0][n - 1]);
 }

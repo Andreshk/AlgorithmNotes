@@ -1,6 +1,5 @@
 #include "DynProgProblems.h"
-#include <fmt/core.h>
-#include <fmt/ranges.h>
+#include <print>
 
 // T(n) = O(n), M(n) = O(1). The last 3 are used by maximumSubmatrixSum only
 void maximumSubarraySum(std::span<const int> values, int* result, int* from, int* to) {
@@ -35,7 +34,7 @@ void maximumSubarraySum(std::span<const int> values, int* result, int* from, int
         *from = bestFrom;
         *to = bestTo;
     } else {
-        fmt::print("The maximum subarray sum for the array {} is: {}\n", values, best);
-        fmt::print("The subarray starts at index: {} and ends at index: {}\n\n", bestFrom, bestTo);
+        // (!) std::print("The maximum subarray sum for the array {} is: {}\n", values, best);
+        std::print("The subarray starts at index: {} and ends at index: {}\n\n", bestFrom, bestTo);
     }
 }

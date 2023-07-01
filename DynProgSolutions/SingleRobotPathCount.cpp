@@ -1,5 +1,5 @@
 #include "DynProgProblems.h"
-#include <fmt/core.h>
+#include <print>
 
 // T(n,m) = O(nm), M(n,m) = O(nm) <- can be reduced to M(n,m) = O(min{n,m})
 void singleRobotPathCount(const Matrix<int>& blocked) {
@@ -23,6 +23,6 @@ void singleRobotPathCount(const Matrix<int>& blocked) {
         }
     }
     //return M[0][0];
-    fmt::print("{}\n", blocked);
-    fmt::print("The number of paths is {}.\n\n", M[0][0]);
+    std::print("{}\n", blocked);
+    std::print("The number of paths is {}.\n\n", M[0][0]);
 }

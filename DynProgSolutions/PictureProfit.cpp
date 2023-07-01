@@ -1,5 +1,5 @@
 #include "DynProgProblems.h"
-#include <fmt/core.h>
+#include <print>
 
 // T(n) = O(n), M(n) = O(n)
 void pictureProfit(std::span<const int> values) {
@@ -11,12 +11,12 @@ void pictureProfit(std::span<const int> values) {
     }
     // return M[n];
 
-    fmt::print("The optimal profit is: {}.\n", M[n]);
-    fmt::print("The following pictures are being taken:\n");
+    std::print("The optimal profit is: {}.\n", M[n]);
+    std::print("The following pictures are being taken:\n");
     int idx = n;
     while (idx > 0) {
         if (idx == 1 || M[idx] == values[idx - 1] + M[idx - 2]) {
-            fmt::print("[{}]: {}\n", idx, values[idx - 1]);
+            std::print("[{}]: {}\n", idx, values[idx - 1]);
             idx -= 2;
         } else {
             --idx;

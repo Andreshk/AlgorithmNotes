@@ -1,5 +1,5 @@
 #pragma once
-#include <fmt/core.h>
+#include <print>
 #include <vector>
 #include <initializer_list>
 #include <cassert>
@@ -60,9 +60,9 @@ public:
 };
 
 // Matrices can be formatted, too, even using the same attributes as the contained values,
-// f.e. fmt::print("{:{}}", m, pad) for padding each individual value to some length.
+// f.e. std::print("{:{}}", m, pad) for padding each individual value to some length.
 template<class T>
-struct fmt::formatter<Matrix<T>> : fmt::formatter<T> {
+struct std::formatter<Matrix<T>> : std::formatter<T> {
     template <typename FormatContext>
     auto format(const Matrix<T>& m, FormatContext& ctx) const {
         for (int row = 0; row < m.rows(); ++row) {
@@ -73,7 +73,7 @@ struct fmt::formatter<Matrix<T>> : fmt::formatter<T> {
                 if (col > 0) {
                     *ctx.out()++ = ' ';
                 }
-                fmt::formatter<T>::format(m[row][col], ctx);
+                std::formatter<T>::format(m[row][col], ctx);
             }
         }
         return ctx.out();

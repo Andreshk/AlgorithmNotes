@@ -1,6 +1,5 @@
 #include "DynProgProblems.h"
-#include <fmt/core.h>
-#include <fmt/ranges.h>
+#include <print>
 #include <algorithm> // std::ranges::{max,max_element}
 
 // T(n) = O(n^2), M(n) = O(n)
@@ -27,11 +26,11 @@ void longestIncreasingSubsequence(std::span<const int> values) {
 
     // Find the maximum value
     const int maxIdx = int(std::distance(M.begin(), std::ranges::max_element(M)));
-    fmt::print("Longest increasing subsequence of {}\nis:", values);
+    // (!) std::print("Longest increasing subsequence of {}\nis:", values);
     int nextIdx = maxIdx;
     while (nextIdx != count) {
-        fmt::print(" {}", values[nextIdx]);
+        std::print(" {}", values[nextIdx]);
         nextIdx = successors[nextIdx];
     }
-    fmt::print("\nLength = {} \n\n", M[maxIdx]);
+    std::print("\nLength = {} \n\n", M[maxIdx]);
 }

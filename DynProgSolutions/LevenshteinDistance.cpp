@@ -1,5 +1,5 @@
 #include "DynProgProblems.h"
-#include <fmt/core.h>
+#include <print>
 
 // T(n,m) = O(nm), M(n,m) = O(nm) <- can be reduced to M(n,m) = O(min{n,m})
 void LevenshteinDistance(std::string_view str1, std::string_view str2) {
@@ -20,5 +20,5 @@ void LevenshteinDistance(std::string_view str1, std::string_view str2) {
     }
     //return M[n][m];
 
-    fmt::print("Minimum edit distance between strings \"{}\" and \"{}\" is {}.\n\n", str1, str2, M[n][m]);
+    std::print("Minimum edit distance between strings \"{}\" and \"{}\" is {}.\n\n", str1, str2, M[n][m]);
 }

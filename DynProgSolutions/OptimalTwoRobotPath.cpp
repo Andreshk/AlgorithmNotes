@@ -1,6 +1,6 @@
 #include "DynProgProblems.h"
 #include <string>     // Debugging & visualization only
-#include <fmt/core.h> // Debugging & visualization only
+#include <print>      // Debugging & visualization only
 #include <algorithm>  // std::ranges::max
 #include <ranges>     // std::views::transform
 
@@ -50,8 +50,8 @@ void optimalTwoRobotPath(const Matrix<int>& field) {
         }
     }
     // Pretty-print the matrix better by padding each value
-    const size_t pad = std::ranges::max(field | std::views::transform([](const int x) { return fmt::formatted_size("{}", x); }));
-    fmt::print("{:{}}\n", field, pad);
-    fmt::print("Maximum profit paths:\n{}\n{}\n", r1, r2);
-    fmt::print("Maximum profit for two robots: {}.\n\n", M[0][0][0]);
+    const size_t pad = std::ranges::max(field | std::views::transform([](const int x) { return std::formatted_size("{}", x); }));
+    std::print("{:{}}\n", field, pad);
+    std::print("Maximum profit paths:\n{}\n{}\n", r1, r2);
+    std::print("Maximum profit for two robots: {}.\n\n", M[0][0][0]);
 }

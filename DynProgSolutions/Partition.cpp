@@ -1,6 +1,5 @@
 #include "DynProgProblems.h"
-#include <fmt/core.h>
-#include <fmt/ranges.h>
+#include <print>
 
 // T(n) = O(nS), M(n) = O(nS) <- can be reduced to M(n) = O(S)
 void Partition(std::span<const int> values) {
@@ -27,16 +26,16 @@ void Partition(std::span<const int> values) {
     // return M[n - 1][S];
 
     if (!M[n - 1][S]) {
-        fmt::print("There is no possible partition for the multiset\n{}\n\n", values);
+        // (!) std::print("There is no possible partition for the multiset\n{}\n\n", values);
     } else {
-        fmt::print("One possible partition for the multiset {}\nis:", values);
+        // (!) std::print("One possible partition for the multiset {}\nis:", values);
         int P = S;
         for (int k = n - 1; k >= 0; --k) {
             if ((k == 0 && M[0][P]) || (P >= values[k] && M[k - 1][P - values[k]])) {
-                fmt::print(" {}", values[k]);
+                std::print(" {}", values[k]);
                 P -= values[k];
             }
         }
-        fmt::print("\n\n");
+        std::print("\n\n");
     }
 }

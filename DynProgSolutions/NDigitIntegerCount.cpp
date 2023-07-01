@@ -1,5 +1,5 @@
 #include "DynProgProblems.h"
-#include <fmt/core.h>
+#include <print>
 
 // T(n,S) = O(nS), M(n,S) = O(nS) <- can be reduced to M(n,S) = O(S)
 void nDigitIntegerCount(const int n, const int S) {
@@ -22,5 +22,5 @@ void nDigitIntegerCount(const int n, const int S) {
         }
     }
     // M[n-1][S] if leading zeroes are allowed, M[n-1][S] - M[n-2][S] otherwise
-    fmt::print("The number of {}-digit numbers with digit sum {} is {}.\n\n", n, S, M[n - 1][S] - M.at(n - 2, S));
+    std::print("The number of {}-digit numbers with digit sum {} is {}.\n\n", n, S, M[n - 1][S] - M.at(n - 2, S));
 }

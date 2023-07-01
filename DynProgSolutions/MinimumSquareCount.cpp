@@ -1,5 +1,5 @@
 #include "DynProgProblems.h"
-#include <fmt/core.h>
+#include <print>
 
 // T(n) = O(n*sqrt(n)), M(n) = O(n)
 void minimumSquareCount(const int n) {
@@ -13,15 +13,15 @@ void minimumSquareCount(const int n) {
     }
     // return M[n];
 
-    fmt::print("The minimum square count with sum {} is: {}\n", n, M[n]);
+    std::print("The minimum square count with sum {} is: {}\n", n, M[n]);
     int idx = n;
     while (idx > 0) {
         for (int i = 0; i*i <= idx; i++) {
             if (M[idx] == M[idx - i*i] + 1) {
-                fmt::print("{}^2 ", i);
+                std::print("{}^2 ", i);
                 idx -= i*i;
             }
         }
     }
-    fmt::print("\n\n");
+    std::print("\n\n");
 }

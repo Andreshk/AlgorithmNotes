@@ -1,5 +1,5 @@
 #include "DynProgProblems.h"
-#include <fmt/core.h>
+#include <print>
 
 // T(n,k) = O(nk), M(n,k) = O(nk) <- can be reduced to M(n,k) = O(k)
 void binomialCoefficient(const int n, const int k) {
@@ -14,5 +14,5 @@ void binomialCoefficient(const int n, const int k) {
         }
     }
     //return M[n - 1][k - 1];
-    fmt::print("{} over {} = {}\n\n", n, k, M[n - 1][k - 1]);
+    std::print("{} over {} = {}\n\n", n, k, M[n - 1][k - 1]);
 }
