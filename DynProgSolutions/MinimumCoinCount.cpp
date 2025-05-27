@@ -5,12 +5,12 @@
 // T(n,S) = O(nS), M(n,S) = O(S)
 void minimumCoinCount(std::span<const int> coins, const int S) {
     assert(S >= 0);
-    constexpr int infinity = std::numeric_limits<int>::max() - 1; // -1 to avoid overflow later
+    constexpr int infinity = std::numeric_limits<int>::max();
     std::vector<int> M(S + 1, infinity);
     M[0] = 0;
     for (int x = 1; x <= S; x++) {
         for (const int c : coins) {
-            if (c <= x) {
+            if (c <= x && M[x - c] != infinity) {
                 M[x] = std::min(M[x], M[x - c] + 1);
             }
         }
@@ -19,7 +19,7 @@ void minimumCoinCount(std::span<const int> coins, const int S) {
 
     // (!) std::print("S = {} with coins: {}\n", S, coins);
     if (M[S] == infinity) {
-        std::print("It's impossible to gather the selected sum with these coins!\n");
+        std::println("It's impossible to gather the selected sum with these coins!");
         return;
     } else {
         std::print("Minimum coin count is {}:", M[S]);
@@ -32,6 +32,6 @@ void minimumCoinCount(std::span<const int> coins, const int S) {
                     break;
                 }
         }
-        std::print("\n\n");
+        std::println();
     }
 }

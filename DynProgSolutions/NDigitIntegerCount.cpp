@@ -6,21 +6,21 @@ void nDigitIntegerCount(const int n, const int S) {
     assert(n > 0 && S >= 0);
     Matrix<int> M(n, S + 1, 0);
     for (int i = 1; i < n; ++i) {
-        M[i][0] = 0;
+        M[i, 0] = 0;
     }
     for (int j = 0; j < 10; ++j) {
-        M[0][j] = 1;
+        M[0, j] = 1;
     }
     for (int j = 10; j <= S; ++j) {
-        M[0][j] = 0;
+        M[0, j] = 0;
     }
     for (int k = 1; k < n; k++) {
         for (int P = 1; P <= S; P++) {
             for (int i = 0; i < 10; i++) {
-                M[k][P] += M.at(k - 1, P - i);
+                M[k, P] += M.at(k - 1, P - i);
             }
         }
     }
-    // M[n-1][S] if leading zeroes are allowed, M[n-1][S] - M[n-2][S] otherwise
-    std::print("The number of {}-digit numbers with digit sum {} is {}.\n\n", n, S, M[n - 1][S] - M.at(n - 2, S));
+    // M[n-1, S] if leading zeroes are allowed, M[n-1, S] - M[n-2, S] otherwise
+    std::println("The number of {}-digit numbers with digit sum {} is {}.", n, S, M[n - 1, S] - M.at(n - 2, S));
 }

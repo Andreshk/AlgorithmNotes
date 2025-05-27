@@ -13,7 +13,7 @@ void minimumSquareCount(const int n) {
     }
     // return M[n];
 
-    std::print("The minimum square count with sum {} is: {}\n", n, M[n]);
+    std::println("The minimum square count with sum {} is: {}", n, M[n]);
     int idx = n;
     while (idx > 0) {
         for (int i = 0; i*i <= idx; i++) {
@@ -23,5 +23,5 @@ void minimumSquareCount(const int n) {
             }
         }
     }
-    std::print("\n\n");
+    std::println();
 }

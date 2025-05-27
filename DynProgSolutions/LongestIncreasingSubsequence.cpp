@@ -26,11 +26,9 @@ void longestIncreasingSubsequence(std::span<const int> values) {
 
     // Find the maximum value
     const int maxIdx = int(std::distance(M.begin(), std::ranges::max_element(M)));
-    // (!) std::print("Longest increasing subsequence of {}\nis:", values);
-    int nextIdx = maxIdx;
-    while (nextIdx != count) {
-        std::print(" {}", values[nextIdx]);
-        nextIdx = successors[nextIdx];
+    std::print("Longest increasing subsequence of {}\n is:", values);
+    for (int next = maxIdx; next != count; next = successors[next]) {
+        std::print(" {}", values[next]);
     }
-    std::print("\nLength = {} \n\n", M[maxIdx]);
+    std::println("\nLength = {}", M[maxIdx]);
 }

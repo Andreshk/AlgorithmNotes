@@ -15,7 +15,7 @@ void pictureProfit(std::span<const int> values) {
     std::print("The following pictures are being taken:\n");
     int idx = n;
     while (idx > 0) {
-        if (idx == 1 || M[idx] == values[idx - 1] + M[idx - 2]) {
+        if (idx == 1 /*?*/|| M[idx] == values[idx - 1] + M[idx - 2]) {
             std::print("[{}]: {}\n", idx, values[idx - 1]);
             idx -= 2;
         } else {

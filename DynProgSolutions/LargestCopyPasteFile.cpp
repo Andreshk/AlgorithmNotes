@@ -18,7 +18,7 @@ void largestCopyPasteFile(const int n) {
     }
     // return M[n];
 
-    std::print("The largest possible filesize with {} keystrokes is: {}\n", n, M[n]);
+    std::println("The largest possible filesize with {} keystrokes is: {}", n, M[n]);
 
     std::vector<int> keystrokes;
     size_t idx = n;
@@ -40,16 +40,15 @@ void largestCopyPasteFile(const int n) {
 
     for (int k : std::views::reverse(keystrokes)) {
         switch (k) {
-        case int(Key::A):     { std::print("\'a\'\n"); break; }
-        case int(Key::CtrlA): { std::print("Ctrl-A\n"); break; }
+        case int(Key::A):     { std::println("\'a\'"); break; }
+        case int(Key::CtrlA): { std::println("Ctrl-A"); break; }
         default: {
             std::print("Ctrl-A Ctrl-C");
             for (int i = 2; i < k; i++) {
                 std::print(" Ctrl-V");
             }
-            std::print("\n");
+            std::println();
         }
         }
     }
-    std::print("\n");
 }

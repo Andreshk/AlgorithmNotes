@@ -10,23 +10,23 @@ void KnapsackNoRepetitions(std::span<const Item> items, const int W) {
         for (int P = 1; P <= W; ++P) {
             const Item& item = items[k - 1];
             if (item.weight > P) {
-                M[k][P] = M[k - 1][P];
+                M[k, P] = M[k - 1, P];
             } else {
-                M[k][P] = std::max(M[k - 1][P], M[k - 1][P - item.weight] + item.price);
+                M[k, P] = std::max(M[k - 1, P], M[k - 1, P - item.weight] + item.price);
             }
         }
     }
-    //return M[n][W];
+    //return M[n, W];
 
-    std::print("The optimal profit for weight {} is: {}\n", W, M[n][W]);
-    std::print("The following items are being used : \n");
+    std::println("The optimal profit for weight {} is: {}", W, M[n, W]);
+    std::println("The following items are being used:");
     int P = W;
     for (int k = n; k > 0; --k) {
-        if (M[k][P] != M[k - 1][P]) {
+        if (M[k, P] != M[k - 1, P]) {
             const Item& item = items[k - 1];
-            std::print("  W: {} C: {}\n", item.weight, item.price);
+            std::println("  W: {} C: {}", item.weight, item.price);
             P -= item.weight;
         }
     }
-    std::print("The unused space in the knapsack is: {}.\n\n", P);
+    std::println("The unused space in the knapsack is: {}.", P);
 }

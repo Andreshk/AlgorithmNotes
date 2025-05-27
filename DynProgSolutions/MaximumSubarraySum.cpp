@@ -34,7 +34,7 @@ void maximumSubarraySum(std::span<const int> values, int* result, int* from, int
         *from = bestFrom;
         *to = bestTo;
     } else {
-        // (!) std::print("The maximum subarray sum for the array {} is: {}\n", values, best);
-        std::print("The subarray starts at index: {} and ends at index: {}\n\n", bestFrom, bestTo);
+        std::println("The maximum subarray sum for the array {} is: {}", values, best);
+        std::println("The subarray starts at index: {} and ends at index: {}", bestFrom, bestTo);
     }
 }

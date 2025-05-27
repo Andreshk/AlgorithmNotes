@@ -14,16 +14,16 @@ void Knapsack(std::span<const Item> items, const int W) {
     }
     //return M[W];
 
-    std::print("The optimal profit for weight {} is: {}\n", W, M[W]);
-    std::print("The following items are being used:\n");
+    std::println("The optimal profit for weight {} is: {}", W, M[W]);
+    std::println("The following items are being used:");
     int w = W;
     while (M[w] != 0) {
         for (const Item& item : items)
             if (item.weight <= w && M[w] == M[w - item.weight] + item.price) {
-                std::print("  W: {} C: {} \n", item.weight, item.price);
+                std::println("  W: {} C: {}", item.weight, item.price);
                 w -= item.weight;
                 break;
             }
     }
-    std::print("The unused space in the knapsack is: {}.\n\n", w);
+    std::println("The unused space in the knapsack is: {}.", w);
 }
