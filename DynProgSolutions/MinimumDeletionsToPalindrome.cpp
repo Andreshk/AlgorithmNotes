@@ -4,7 +4,7 @@
 // T(n) = O(n^2); M(n) = O(n^2) -> can be optimized to O(n) if recovering the palindrome isn't required
 void minimumDeletionsToPalindrome(std::string_view str) {
     const int n = int(str.length());
-    // Invariant: M[i][j] contains the max length of a palindromic subsequence of str[i..j)
+    // Invariant: M[i, j] contains the max length of a palindromic subsequence of str[i..j]
     Matrix<int> M(n, n, 0);
     for (int i = 0; i < n; ++i) {
         M[i, i] = 1;
@@ -32,12 +32,12 @@ void minimumDeletionsToPalindrome(std::string_view str) {
             front.push_back(str[i]);
             back.push_back(str[j]);
             ++i; --j;
-        } else if (M[i, j] == M[i + 1, j]) {
-            front.push_back(' ');
-            ++i;
-        } else { // M[i, j] == M[i, j - 1]
+        } else if (M[i, j] == M[i, j - 1]) {
             back.push_back(' ');
             --j;
+        } else /*if (M[i, j] == M[i + 1, j])*/ {
+            front.push_back(' ');
+            ++i;
         }
     }
     if (i == j) { back.push_back(str[i]); }
